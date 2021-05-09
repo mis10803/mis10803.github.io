@@ -6,6 +6,14 @@ hiderelated: true
 hidediscus: true
 ---
 
-<center>
-<iframe src="/resume.pdf" width="100%" height="800" border="0"></iframe>
-</center>
+Check out some of my resumes below:
+
+
+</i> &nbsp; [Professional Resume](/professionalresume/)
+
+</i> &nbsp; [Academic Resume](/academicresume/)
+
+<!--
+<i class="fa fa-pie-chart"></i> 
+<i class="fa fa-tasks"></i> 
+-->
