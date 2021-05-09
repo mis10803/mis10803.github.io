@@ -1,0 +1,168 @@
+---
+title: "Project 1"
+author: "Mia Soto"
+date: "April 6, 2021"
+output:
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: false
+---
+
+```{r global_options, include=FALSE}
+#DO NOT EDIT THIS CHUNK OR ANYTHING ABOVE IT!
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE, fig.align = "center", warning = F, message = F, tidy=T, tidy.opts=list(width.cutoff=50), R.options=list(max.print=100,dplyr.print_max=100))
+```
+
+## Mia Soto eid:mis696
+
+> **Introduction**
+> I chose to use personal data for this project as I would love to see how this class can apply to an analysis of my daily life. The two data sets I used were Netflix viewing data and Apple Watch workout statistics. The Netflix viewing data for the year of 2020 was requested from Netflix for my account. Then, I took the data and altered it to make it more fitting for the project. Originally the data contained the names of the shows I watched each day, but I wanted to know the minutes of viewing time, so I hand calculated the minutes of Netflix viewed each day in 2020. Then, I used the Acitivity app on my watch to make a table of my Move goal calories, my Stand goal hours, and my Exercise goal minutes for everyday in 2020. There is data for everyday of 2020 even if it is given as 0 because I wanted to see if there was a correlation between my activity throughout the day and how much Netflix I watched in 2020. This is super interesting to me because I think 2020 was quite the weird year in which I picked up many new hobbies, including working out and wacthing documentaries, and I would love to see the overall change this made in my lifestyle throughout the year. I expect to see an inverse relationship between Netflix viewing time and Activity statistics overall, because if I was more active, I was less likely to be sitting on the couch and watching Netflix, and I expect to see this relationship within the data. 
+
+---
+
+## Joining:
+
+##### I first imported my CSV's into Rstudio. Then, I joined the two datasets together below.
+
+```{R}
+library(tidyverse)
+netflix <- read_csv("Netflix.csv") 
+workout <- read_csv("Workout.csv") 
+
+workout %>% full_join(netflix)->yearstat
+head(yearstat)
+```
+**I chose to do a full join for my data set because I wanted all of the columns in my data sets to appear for the new data. No rows were lost because all rows are complete meaning there is no date missing from either data set. This is good because more complete data will provide a more accurate analysis of the statistics. This fully joined data shows all columns from the Netflix data and the Activity data joined by the date as a full join was done.**
+
+## Mutating:
+
+```{R}
+glimpse(yearstat)
+yearstat%>%separate(Date,into=c("month","day", "year"))->longstat
+longstat %>% mutate_if(is.character, as.integer)->intstat
+intstat%>%mutate(monthcat = case_when(month==1 ~ "Jan",month==2 ~ "Feb",month==3 ~ "Mar", month==4 ~ "Apr", month == 5 ~ "May", month==6 ~ "Jun", month== 7 ~ "Jul", month==8 ~ "Aug", month==9 ~ "Sep", month==10 ~ "Oct", month==11 ~ "Nov", month ==12 ~ "Dec"))->catdat
+catdat%>%mutate('Stand (min)' = 60*`Stand (hrs)`)->mindat
+mindat%>%mutate(tvcat_cat = case_when(`Minutes Watched`>145 ~ "high",
+`Minutes Watched`<=145 & 41<=`Minutes Watched` ~ "med",
+`Minutes Watched`<41 ~ "low"))->mincat
+head(mincat)
+
+```
+**This helped clean up the data and make it easier to read and use. First, the date, that was originally in MM/DD/YYYY, was separated using the dplyr separate function to show month, date, and year as three separate columns. Next, these were changed into integer variables instead of character variables using mutate if as these were the only columns that were still characters at this point. Next, the month column was mutated to be a categorical variable for later use using the mutate function to form the column called monthcat. Then, the stand hours variable was manipulated to show a stand minutes column by multiplying the stand hours column by 60 using mutate. Lastly, a categorical variable was made using mutate in which the minutes watched was categorized into high, medium, and low minutes watched using the mutate function, shown as the varibale tvcat_cat. **
+
+## Filter and Arrange:  
+
+```{R}
+mincat%>%filter(month==3)%>%arrange(desc(`Minutes Watched`))
+
+```
+**This table was used to show the month of March in the year 2020 using the filter function. Then, the minutes watched was arranged in descending order, using the arrange function, to show most to least minutes watched for everyday in March. This table is cool because it shows the month of March 2020, which was when quarantine started. This is interesting because on March 15th the COVID-19 situation got a lot more serious and the quarantine began meaning there wasn't much to do. This table shows that the most minutes watched were towards the end of the month when the quarantine began and everything was closed, which makes sense because this is when my documentary wacthing hobby really began.**
+
+## Group By, Select, and Summary Statistics: 
+
+```{R}
+
+mincat%>%select(is.numeric)%>%summarize_all(n_distinct)->ndist
+mincat%>%select(is.numeric)%>%summarize_all(mean)->meanvars
+mincat%>%select(is.numeric)%>%summarize_all(sd)->sdvars
+mincat%>%select(is.numeric)%>%summarize_all(var)->varvars
+mincat%>%group_by(monthcat)%>%summarize_all(mean)%>%arrange(desc(`Stand (min)`))->catstat
+catstat
+mincat%>%group_by(monthcat)%>%summarize_all(max)
+mincat%>%group_by(monthcat)%>%summarize_all(min)
+
+
+```
+
+**To create a table of summary statistics, first vectors of each variables n_distinct, mean, standard deviation, and variation were made using the select and summarize_all functions for use later. Then, a more interesting table was made by grouping by month categorical and summarizing all by mean, then arranging by the mean stand minutes for each month. This is interesting because the month of August 2020 had the most mean stand hours for the year of 2020. In the month of August I moved back to Austin to begin school and walked to many appointments and study spots around campus to keep busy. This is reflected in the table. The last two tables show the maximum and minimum values for each variable by month. These tables are interesting because they allow someone to see what activity was more popular and less popular each month and make hypotheses about these numbers.**
+
+##Tidying:
+```{R}
+
+summarytabs <- data.frame(ndist, meanvars, sdvars, varvars) 
+head(summarytabs)
+summarytabs%>%rename(month.ndist=month, day.ndist=day, Move.ndist=Move..cals., Exercisemin.ndist=Exercise..mins., Standhrs.ndist= Stand..hrs., minwatch.ndist=Minutes.Watched, standmin.ndist= Stand..min., month.mean=month.1, day.mean=day.1, Move.mean=Move..cals..1, Exercisemin.mean=Exercise..mins..1, Standhrs.mean= Stand..hrs..1, minwatch.mean=Minutes.Watched.1, standmin.mean= Stand..min..1, month.sd=month.2, day.sd=day.2, Move.sd=Move..cals..2, Exercisemin.sd=Exercise..mins..2, Standhrs.sd= Stand..hrs..2, minwatch.sd=Minutes.Watched.2, standmin.sd= Stand..min..2, month.vars=month.3, day.vars=day.3, Move.vars=Move..cals..3, Exercisemin.vars=Exercise..mins..3, Standhrs.vars= Stand..hrs..3, minwatch.vars=Minutes.Watched.3, standmin.vars= Stand..min..3, year.ndist=year, year.mean=year.1, year.sd=year.2,year.vars=year.3 )->sumtabs
+sumtabs%>%pivot_longer(1:32)->dubwide
+dubwide
+dubwide%>%separate(name, into=c("Variable","Statistic"))%>%pivot_wider(names_from="Statistic",values_from="value")->StatTable
+
+StatTable
+
+```
+**This code first makes a data set of the four vectors created in the previous section of code. Then, variables were renamed for more clarity when pivoting. Next, a pivot longer function was used and shown above as dubwide. However, this data is double wide as it contains two variables in the name column data. So, the name column was separated using the separate function to create a new columns called variable and statistic. This was then pivoted wider to make the statistics column variables become the column names with the variable column staying as the row names. This allowed an easy to read table fo the summary statistics for each numeric variable in the data set. The most interesting result was that the stand minutes had the highest standard deviation. This is interesting because I stand up more than I do work out. Some days I didn't work out at all. So, I would expect move goals and exercise goals to have more standard deviation over the stand minutes as stand minutes was a more common thing that I thought I did consistently each day. **
+
+
+
+## Correlation Heat Map: 
+
+```{R}
+mincat %>% select_if(is.numeric) %>% cor %>% as.data.frame %>%
+rownames_to_column %>% pivot_longer(-1) %>%
+ggplot(aes(rowname,name,fill=value))+geom_tile()+  ggtitle("Correlation Heat Map")+scale_fill_gradient2(low="red",mid="white",high="blue")+
+geom_text(aes(label=round(value,2)), color="black", size=4)+
+xlab("")+ylab("")+coord_fixed()+theme(axis.text.x = element_text(angle = 90, hjust=1))
+
+```
+**This correlation heat map shows the correlation between each variable. The heat map above shows a large correlation between stand time (both minutes and hours) and move calories. It also shows a strong positive correlation between move calories and exercise minutes. This is because if I am moving then I am also most likely exercising in some way as well as standing. Lastly, The heat map shows a complete positive correlation between stand minutes and stand hours because the stand minutes are a direct function of stand hours created earlier by the mutate function. There are low correlations for the rest of the variables. **
+
+## Visualization 1:
+
+```{R}
+ggplot(mincat, aes(`Minutes Watched`,`Exercise (mins)`, color=monthcat))+geom_point()+ggtitle("Exercise vs. TV Minutes Each Month")+ theme_minimal()
+
+
+```
+
+**The first correlation plot shown is between the variables exercise minutes and minutes watched, colored by month category. This plot shows little to no correlation between the two variables, which is surprising considering if I am not working out, I am spending my free time watching Netflix, so I would expect to see a strong negative correlation between these two variables. ** 
+
+##Visualization 2:
+```{R}
+
+ggplot(mincat, aes(x = monthcat, y = `Move (cals)`))+
+  geom_bar(stat="summary",fun=mean, aes(fill=monthcat))+
+  geom_errorbar(stat="summary", fun.data=mean_cl_normal)+scale_y_continuous(breaks = seq(0,450,25))  +   xlab("Month") +scale_fill_brewer(palette = "Paired") + ggtitle("Move Calories Summary Each Month")
+```
+**The next plot uses stat summary. The bars are colored by month and show the mean and standard deviation of each months move calories. This is not surprising because the tallest bar is the bar for the month of September which is when I first began working out heavily during the school year as a way to relieve stress. The shortest bar is in July which is also not surprising because during this time I was doing 15 hours of summer school and didn't spend much time working out at all, which is clearly represented in the plot. Each bar shows a pretty consistent standard deviation as I am consistent in wokring out about once a week so varaition would come from that consistency.**
+
+
+
+## Figure Out How Many Clusters:
+
+
+```{R}
+library(cluster)
+temp<-mincat%>%select(`Minutes Watched`,`Exercise (mins)`,`Move (cals)`)
+sil_width<-vector()
+for(i in 2:10){
+pam_fit <- pam(temp, k = i)
+sil_width[i] <- pam_fit$silinfo$avg.width
+}
+ggplot()+geom_line(aes(x=1:10,y=sil_width))+scale_x_continuous(name="k",breaks=1:10)
+```
+**The plot above shows where the optimal number of clusters is for the minutes watched, exercise minutes, and move calories, which is shown as 4 because this is the peak of the plot.**
+
+## PAM: 
+
+```{R}
+library(cluster)
+clust<-mincat%>%dplyr::select(`Minutes Watched`, `Exercise (mins)`, `Move (cals)`)
+pam5<-clust%>%scale%>%pam(4)
+pam5
+pclust<-clust%>%mutate(cluster=as.factor(pam5$clustering)) #save the cluster solution in your dataset
+ggplot(pclust, aes(x=`Minutes Watched`,y=`Exercise (mins)`, color=cluster))+geom_point()
+library(plotly)
+pclust%>%plot_ly(x= ~`Minutes Watched`, y = ~`Exercise (mins)`, z = ~`Move (cals)`, color= ~cluster,
+type = "scatter3d", mode = "markers") %>%
+layout(autosize = F, width = 900, height = 400) 
+library(GGally)
+plot(pam5,which=2)
+```
+**Lastly, a PAM clustering was done and visualized on the plot above with minutes watched on the x axis, exercise minutes on the y axis and move calories on the z axis and a normal plot of just the exercise minutes and minutes watched. The scatter plot shows no correlation between exercise minutes and minutes watched and the xyz plot only shows strong positive correlation between exercise minutes and move calories. This is surprising because once again, I normally split my free time between watching Netflix and working out so I would expect to see a negative correlation between exercise minutes or move calories and minutes watched. Also, I expect to see a strong positive correlation between exercise minutes and move calories as when I am exercising I should be burning some amount of calories along with it. This is shown in the xyz plot of the data. A silhouette width analysis was done on this clustering and shows values of 0.74, 0.50, 0.15, and 0.36. This shows that a strong structure was found for cluster one but clusters 2 and 4 show little or artificial structure and cluster 3 shows no structure. ** 
+
+```{R, echo=F}
+## DO NOT DELETE THIS BLOCK!
+sessionInfo()
+Sys.time()
+Sys.info()
+```

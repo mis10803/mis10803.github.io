@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Mia Soto" />
+    
+    <link rel="shortcut icon" type="image/x-icon" href="../../img/favicon.ico">
+    <title>Project 1</title>
+    <meta name="generator" content="Hugo 0.83.1" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="../../css/main.css" />
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,200bold,400old" />
+    
+    <!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+			<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
+
+    
+  </head>
+
+  <body>
+    <div id="wrap">
+      
+      <nav class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="../../"><i class="fa fa-home"></i></a>
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <div class="navbar-collapse collapse" id="navbar">
+      <ul class="nav navbar-nav navbar-right">
+      
+        
+        <li><a href="../../post/">BLOG</a></li>
+        
+        <li><a href="../../projects/">PROJECTS</a></li>
+        
+        <li><a href="../../resume/">RESUME</a></li>
+        
+      
+      </ul>
+    </div>
+  </div>
+</nav>
+
+      <div class="container">
+        <div class="blog-post">
+          <h3>
+            <strong><a href="../../project/project2/">Project 1</a></strong>
+          </h3>
+        </div>
+ 
+<div class="blog-title">
+          <h4>
+         January 1, 0001 
+            &nbsp;&nbsp;
+            
+          </h4>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="blogpost">
+              
+
+
+<div id="mia-soto-eidmis696" class="section level2">
+<h2>Mia Soto eid:mis696</h2>
+<blockquote>
+<p><strong>Introduction</strong>
+This data set contains data from car crashes. There are 15 variables in this data set with 26,217 observations, and I will discuss the most notable variables. The first notable variable is a categorical variable called dead that classifies the victim of the crash as alive or dead. Two other important variables are airbag and seatbelt, which are two categorical variables with the option none or airbag/belted, respectively. Another variable is called frontal and is a binary variable, with the options 0 for non-frontal and 1 for frontal impact. The victims are also classified by sex, either f for female or m for male. The age of the victim is shown as the numeric variable, ageOFocc, with 82 distinct values. The year of the accident is also provided as the numeric variable, yearacc, with 6 distinct values. The year of the model of the car that was in the accident is a numeric variable with 46 distinct values, shown as the variable yearVeh. The deploy variable shows a binary value, 0 for no airbags or unavailable and 1 for deployed airbags. The last important variable shows severity of injury as a variable called injSeverity with 7 distinct numeric variables representing a range of injury from none, possible injury, no incapacity, incapacity, killed, unknown, or prior death.</p>
+</blockquote>
+<hr />
+</div>
+<div id="manova" class="section level2">
+<h2>MANOVA:</h2>
+<div id="section" class="section level5">
+<h5></h5>
+<pre class="r"><code># assumptions:
+library(mvtnorm)
+library(ggExtra)
+library(dplyr)
+library(ggplot2)
+library(rstatix)
+library(tidyverse)
+# test for multivariate normality for a shorter
+# dataset
+car &lt;- read_csv(&quot;car.csv&quot;)
+car1 &lt;- car %&gt;% na.omit
+carshort &lt;- head(car1, 5000)
+group1 &lt;- carshort$abcat
+DVnew &lt;- carshort %&gt;% select(ageOFocc, yearacc, yearVeh, 
+    injSeverity)
+sapply(split(DVnew, group1), mshapiro_test)</code></pre>
+<pre><code>##           deploy       nodeploy     unavail    
+## statistic 0.9718324    0.9715628    0.9384994  
+## p.value   1.287312e-15 4.811237e-11 5.60424e-33</code></pre>
+<pre class="r"><code># homogeneity test for a shorter dataset
+box_m(DVnew, group1)</code></pre>
+<pre><code>## # A tibble: 1 x 4
+##   statistic   p.value parameter method                                          
+##       &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;                                           
+## 1     1475. 7.77e-301        20 Box&#39;s M-test for Homogeneity of Covariance Matr…</code></pre>
+<pre class="r"><code># MANOVA test
+man1 &lt;- manova(cbind(ageOFocc, yearacc, yearVeh, injSeverity) ~ 
+    abcat, data = car1)
+summary(man1)</code></pre>
+<pre><code>##              Df  Pillai approx F num Df den Df    Pr(&gt;F)    
+## abcat         2 0.59438   2754.7      8  52116 &lt; 2.2e-16 ***
+## Residuals 26060                                             
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code># ANOVA
+summary.aov(man1)</code></pre>
+<pre><code>##  Response ageOFocc :
+##                Df  Sum Sq Mean Sq F value    Pr(&gt;F)    
+## abcat           2   26805 13402.5  41.947 &lt; 2.2e-16 ***
+## Residuals   26060 8326409   319.5                      
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+##  Response yearacc :
+##                Df Sum Sq Mean Sq F value    Pr(&gt;F)    
+## abcat           2   3093 1546.61   556.6 &lt; 2.2e-16 ***
+## Residuals   26060  72413    2.78                      
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+##  Response yearVeh :
+##                Df Sum Sq Mean Sq F value    Pr(&gt;F)    
+## abcat           2 462368  231184   17095 &lt; 2.2e-16 ***
+## Residuals   26060 352415      14                      
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+##  Response injSeverity :
+##                Df Sum Sq Mean Sq F value    Pr(&gt;F)    
+## abcat           2   1248  624.18  384.12 &lt; 2.2e-16 ***
+## Residuals   26060  42346    1.62                      
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code># T-Tests
+pairwise.t.test(car1$ageOFocc, car1$abcat, p.adj = &quot;none&quot;)</code></pre>
+<pre><code>## 
+##  Pairwise comparisons using t tests with pooled SD 
+## 
+## data:  car1$ageOFocc and car1$abcat 
+## 
+##          deploy  nodeploy
+## nodeploy 6.8e-07 -       
+## unavail  8.3e-06 &lt; 2e-16 
+## 
+## P value adjustment method: none</code></pre>
+<pre class="r"><code>pairwise.t.test(car1$yearacc, car1$abcat, p.adj = &quot;none&quot;)</code></pre>
+<pre><code>## 
+##  Pairwise comparisons using t tests with pooled SD 
+## 
+## data:  car1$yearacc and car1$abcat 
+## 
+##          deploy nodeploy
+## nodeploy 0.042  -       
+## unavail  &lt;2e-16 &lt;2e-16  
+## 
+## P value adjustment method: none</code></pre>
+<pre class="r"><code>pairwise.t.test(car1$yearVeh, car1$abcat, p.adj = &quot;none&quot;)</code></pre>
+<pre><code>## 
+##  Pairwise comparisons using t tests with pooled SD 
+## 
+## data:  car1$yearVeh and car1$abcat 
+## 
+##          deploy nodeploy
+## nodeploy 0.24   -       
+## unavail  &lt;2e-16 &lt;2e-16  
+## 
+## P value adjustment method: none</code></pre>
+<pre class="r"><code>pairwise.t.test(car1$injSeverity, car1$abcat, p.adj = &quot;none&quot;)</code></pre>
+<pre><code>## 
+##  Pairwise comparisons using t tests with pooled SD 
+## 
+## data:  car1$injSeverity and car1$abcat 
+## 
+##          deploy nodeploy
+## nodeploy &lt;2e-16 -       
+## unavail  0.86   &lt;2e-16  
+## 
+## P value adjustment method: none</code></pre>
+<pre class="r"><code># Number Tests, Probability of Type I error and
+# Bonferroni Correction
+12 + 1 + 4</code></pre>
+<pre><code>## [1] 17</code></pre>
+<pre class="r"><code>0.05/17</code></pre>
+<pre><code>## [1] 0.002941176</code></pre>
+<pre class="r"><code>1 - (0.95^17)</code></pre>
+<pre><code>## [1] 0.5818797</code></pre>
+<p><strong>The categorical variable, abcat, which categorizes whether the airbag was deployed, not deployed, or unavailable was tested against 5 relevant numeric variables ageOFocc, yearacc, yearVeh, and injSeverity. The null hypothesis for the MANOVA test was that for all the numeric variables used, there was not difference in mean between the categorical groups. The alternative hypothesis was that for at least one numeric variable the means differed between the categorical groups. The assumptions of multivariate normality and homogeneity were tested using a shorter data set for simplicity. These tests both showed a p-value less than 0.05 meaning the assumptions for the data set were not met. The MANOVA test showed a p-value way less than 0.05 meaning that I reject the null hypothesis and there was a difference in means for at least one of the numeric variables across the categorical grouping. Then an ANOVA test was done on each variable all showing a p-value of less than 0.05 meaning that each variable shows a mean difference across groups and I can reject the null hypothesis. Then a t-test was done for each variable to find exactly which groups differ from one another for each numeric variable.The ageOFocc variable also showed a p-value of less than 0.0.0029 for each group and therefore it can be concluded that the mean age for each categorical group is vastly different from one another and the null hypothesis can be rejected. The yearacc variable showed a p-value less than 0.0.0029 only between the deploy and unavail and nodeploy and unavail which means the means for yearacc for these groups are very different from one another and the null hypothesis can be rejected, the yearVeh variable showed this same pattern. The injSeverity variable showed a p-value less than 0.0029 between the deploy and nodeploy groups and the nodeploy and unavail groups. This means that the means for these two groups are different and I can reject the null hypothesis for these groups. One MANOVA, 4 ANOVA’s, and 12 post-hoc t-tests were performed. Therefore, 17 total tests were performed. The probability of at least one type 1 error occurring is 0.582. The bonferroni correction is 0.0029 and this was used when making conclusions about the t-tests </strong></p>
+</div>
+</div>
+<div id="randomization-test" class="section level2">
+<h2>Randomization Test:</h2>
+<pre class="r"><code>car1 %&gt;% group_by(dead) %&gt;% summarize(means = mean(ageOFocc)) %&gt;% 
+    summarize(mean_diff = diff(means))</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##   mean_diff
+##       &lt;dbl&gt;
+## 1      7.74</code></pre>
+<pre class="r"><code>rand_dist &lt;- vector()
+for (i in 1:5000) {
+    new &lt;- data.frame(age = sample(car1$ageOFocc), 
+        condition = car1$dead)
+    rand_dist[i] &lt;- mean(new[new$condition == &quot;dead&quot;, 
+        ]$age) - mean(new[new$condition == &quot;alive&quot;, 
+        ]$age)
+}
+mean(rand_dist &gt; 7.74249 | rand_dist &lt; -7.74249)</code></pre>
+<pre><code>## [1] 0</code></pre>
+<pre class="r"><code>{
+    hist(rand_dist, main = &quot;&quot;, ylab = &quot;&quot;)
+    abline(v = c(-7.74249, 7.74249), col = &quot;red&quot;)
+}</code></pre>
+<p><img src="../../project/project2_files/figure-html/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" />
+<strong>A randomization test was performed between age of the occupant and the alive or dead status. The mean difference between the alive and dead groups was 7.74249 years before the randomization test. A p-value for the randomization test was found to be 0. The null hypothesis for the test is that mean age for the alive and dead groups is the same. The alternative hypothesis is that the groups show a difference in mean age. Because the p-value is less than 0.05, I reject the null hypothesis and can conclude that the mean difference is not due to random chance alone. </strong></p>
+</div>
+<div id="linear-regression" class="section level2">
+<h2>Linear Regression:</h2>
+<pre class="r"><code>library(sandwich)
+library(lmtest)
+car1$inj_c &lt;- car1$injSeverity - mean(car1$injSeverity)
+head(car1)</code></pre>
+<pre><code>## # A tibble: 6 x 17
+##      X1 dvcat weight dead  airbag seatbelt frontal sex   ageOFocc yearacc
+##   &lt;dbl&gt; &lt;chr&gt;  &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;      &lt;dbl&gt; &lt;chr&gt;    &lt;dbl&gt;   &lt;dbl&gt;
+## 1     1 25-39   25.1 alive none   belted         1 f           26    1997
+## 2     2 10-24   25.1 alive airbag belted         1 f           72    1997
+## 3     3 10-24   32.4 alive none   none           1 f           69    1997
+## 4     4 25-39  495.  alive airbag belted         1 f           53    1997
+## 5     5 25-39   25.1 alive none   belted         1 f           32    1997
+## 6     6 40-54   25.1 alive none   belted         1 f           22    1997
+## # … with 7 more variables: yearVeh &lt;dbl&gt;, abcat &lt;chr&gt;, occRole &lt;chr&gt;,
+## #   deploy &lt;dbl&gt;, injSeverity &lt;dbl&gt;, caseid &lt;chr&gt;, inj_c &lt;dbl&gt;</code></pre>
+<pre class="r"><code>fit &lt;- lm(ageOFocc ~ dead * abcat, data = car1)
+summary(fit)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = ageOFocc ~ dead * abcat, data = car1)
+## 
+## Residuals:
+##    Min     1Q Median     3Q    Max 
+## -28.86 -14.78  -4.08  10.22  61.22 
+## 
+## Coefficients:
+##                        Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)             37.0801     0.1938 191.318  &lt; 2e-16 ***
+## deaddead                 7.7759     0.9477   8.205 2.41e-16 ***
+## abcatnodeploy            1.7084     0.3103   5.506 3.71e-08 ***
+## abcatunavail            -1.2998     0.2573  -5.052 4.41e-07 ***
+## deaddead:abcatnodeploy  -2.3336     1.7809  -1.310    0.190    
+## deaddead:abcatunavail    1.0089     1.1833   0.853    0.394    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 17.8 on 26057 degrees of freedom
+## Multiple R-squared:  0.01208,    Adjusted R-squared:  0.01189 
+## F-statistic: 63.74 on 5 and 26057 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code># Visualization
+ggplot(car1, aes(x = abcat, y = ageOFocc, group = dead)) + 
+    geom_point(aes(color = dead)) + geom_smooth(method = &quot;lm&quot;, 
+    formula = y ~ 1, se = F, fullrange = T, aes(color = dead)) + 
+    theme(legend.position = c(0.9, 0.19)) + xlab(&quot;&quot;)</code></pre>
+<p><img src="../../project/project2_files/figure-html/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># Check for homoskedasticity
+library(car)
+leveneTest(fit)</code></pre>
+<pre><code>## Levene&#39;s Test for Homogeneity of Variance (center = median)
+##          Df F value    Pr(&gt;F)    
+## group     5   27.83 &lt; 2.2e-16 ***
+##       26057                      
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code># Check for normality
+hist(fit$residuals)</code></pre>
+<p><img src="../../project/project2_files/figure-html/unnamed-chunk-3-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># Normal SE
+summary(fit)$coef[, 1:2]</code></pre>
+<pre><code>##                         Estimate Std. Error
+## (Intercept)            37.080062  0.1938140
+## deaddead                7.775917  0.9477155
+## abcatnodeploy           1.708407  0.3102861
+## abcatunavail           -1.299812  0.2573011
+## deaddead:abcatnodeploy -2.333616  1.7808905
+## deaddead:abcatunavail   1.008856  1.1833002</code></pre>
+<pre class="r"><code># Robust SE
+coeftest(fit, vcov = vcovHC(fit))[, 1:2]</code></pre>
+<pre><code>##                         Estimate Std. Error
+## (Intercept)            37.080062  0.1918835
+## deaddead                7.775917  1.1322912
+## abcatnodeploy           1.708407  0.3055260
+## abcatunavail           -1.299812  0.2551176
+## deaddead:abcatnodeploy -2.333616  2.2410650
+## deaddead:abcatunavail   1.008856  1.4032685</code></pre>
+<p><strong>The predicted age for an occupant that is alive with a deployed airbag is 37.08. Dead occupants with a deployed airbag have a predicted age 7.7759 years older than alive people with a deployed airbag. The predicted age for alive occupants with an airbag that didn’t deploy is 1.7084 years older than an alive occupant with a deployed airbag. The predicted age for an alive occupant with an unavailable airbag is 1.2998 years younger than an alive occupant with a deployed airbag. The slope of non deployed airbags for dead occupants on age is -2.3336. The slope of unavailable airbags for dead occupants on age is -1.0089. The r-squared value for the regression is 0.01208. This means that 0.01208 is the proportion of the variation in the outcome is explained by the model. Linearity cannot be checked because two categorical variables are interacting in the model. Homoskedasticity was checked using a Levene test. This test has a null hypothesis that the equal variance assumption is met. Because the p-value is less than 0.05, the null hypothesis can be rejected and it can be concluded that the model does not follow homoskedasticity. The test for normality also revealed a histogram with a non-normal curve, meaning it can be concluded that the data also does not follow the normality assumption. Lastly, a coef test was run on robust errors. This revealed increased standard errors for the dead category, and the dead interaction with both nodeploy and unavail. The rest of the standard errors, while not exactly the same, stayed relatively the same as the normal standard errors. A plot of the linear regression is shown above. </strong></p>
+</div>
+<div id="bootstrapping" class="section level2">
+<h2>Bootstrapping:</h2>
+<pre class="r"><code>resids &lt;- fit$residuals
+fitted &lt;- fit$fitted.values
+resid_resamp &lt;- replicate(5000, {
+    new_resids &lt;- sample(resids, replace = TRUE)
+    car1$new_y &lt;- fitted + new_resids
+    fitnew &lt;- lm(new_y ~ dead * abcat, data = car1)
+    coef(fitnew)
+})
+resid_resamp %&gt;% t %&gt;% as.data.frame %&gt;% summarize_all(sd)</code></pre>
+<pre><code>##   (Intercept)  deaddead abcatnodeploy abcatunavail deaddead:abcatnodeploy
+## 1    0.192443 0.9382423     0.3115878    0.2549199               1.758444
+##   deaddead:abcatunavail
+## 1               1.17074</code></pre>
+<p><strong>These bootstrapped standard errors were found by using residuals. The bootstrapped standard errors are very very close to the normal standard errors and therefore only show difference with the robust standard errors in the same way the normal standard errors compare with the robust standard errors. </strong></p>
+<p>##Logistic Regression predicting a Binary Variable with 2 predictors:</p>
+<pre class="r"><code># Regression
+head(car1)</code></pre>
+<pre><code>## # A tibble: 6 x 17
+##      X1 dvcat weight dead  airbag seatbelt frontal sex   ageOFocc yearacc
+##   &lt;dbl&gt; &lt;chr&gt;  &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;      &lt;dbl&gt; &lt;chr&gt;    &lt;dbl&gt;   &lt;dbl&gt;
+## 1     1 25-39   25.1 alive none   belted         1 f           26    1997
+## 2     2 10-24   25.1 alive airbag belted         1 f           72    1997
+## 3     3 10-24   32.4 alive none   none           1 f           69    1997
+## 4     4 25-39  495.  alive airbag belted         1 f           53    1997
+## 5     5 25-39   25.1 alive none   belted         1 f           32    1997
+## 6     6 40-54   25.1 alive none   belted         1 f           22    1997
+## # … with 7 more variables: yearVeh &lt;dbl&gt;, abcat &lt;chr&gt;, occRole &lt;chr&gt;,
+## #   deploy &lt;dbl&gt;, injSeverity &lt;dbl&gt;, caseid &lt;chr&gt;, inj_c &lt;dbl&gt;</code></pre>
+<pre class="r"><code>fit2 &lt;- glm(frontal ~ dead + airbag, family = &quot;binomial&quot;, 
+    data = car1)
+coeftest(fit2)</code></pre>
+<pre><code>## 
+## z test of coefficients:
+## 
+##              Estimate Std. Error z value  Pr(&gt;|z|)    
+## (Intercept)  0.497620   0.017353  28.675 &lt; 2.2e-16 ***
+## deaddead    -0.688131   0.060001 -11.469 &lt; 2.2e-16 ***
+## airbagnone   0.287834   0.026302  10.943 &lt; 2.2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>exp(coeftest(fit2))</code></pre>
+<pre><code>## 
+## z test of coefficients:
+## 
+##             Estimate Std. Error    z value Pr(&gt;|z|)
+## (Intercept)  1.64480    1.01750 2.8420e+12        1
+## deaddead     0.50251    1.06184 0.0000e+00        1
+## airbagnone   1.33354    1.02665 5.6576e+04        1</code></pre>
+<pre class="r"><code># Confusion Matrix
+
+car1$prob &lt;- predict(fit2, type = &quot;response&quot;)
+car1$predicted &lt;- ifelse(car1$prob &gt; 0.5, 1, 0)
+table(truth = car1$frontal, prediction = car1$predicted) %&gt;% 
+    addmargins</code></pre>
+<pre><code>##      prediction
+## truth     0     1   Sum
+##   0     295  8993  9288
+##   1     216 16559 16775
+##   Sum   511 25552 26063</code></pre>
+<pre class="r"><code># Accuracy
+(295 + 16559)/26063</code></pre>
+<pre><code>## [1] 0.6466639</code></pre>
+<pre class="r"><code># Specificity
+(295/9288)</code></pre>
+<pre><code>## [1] 0.03176141</code></pre>
+<pre class="r"><code># Sensitivity
+car1$TPR &lt;- 16559/16775
+# PPV
+16559/25552</code></pre>
+<pre><code>## [1] 0.648051</code></pre>
+<pre class="r"><code># FPR
+car1$FPR &lt;- ((8993)/9288)
+
+
+# AUC
+class_diag &lt;- function(probs, truth) {
+    
+    tab &lt;- table(factor(probs &gt; 0.5, levels = c(&quot;FALSE&quot;, 
+        &quot;TRUE&quot;)), truth)
+    acc = sum(diag(tab))/sum(tab)
+    sens = tab[2, 2]/colSums(tab)[2]
+    spec = tab[1, 1]/colSums(tab)[1]
+    ppv = tab[2, 2]/rowSums(tab)[2]
+    
+    if (is.numeric(truth) == FALSE &amp; is.logical(truth) == 
+        FALSE) 
+        truth &lt;- as.numeric(truth) - 1
+    
+    # CALCULATE EXACT AUC
+    ord &lt;- order(probs, decreasing = TRUE)
+    probs &lt;- probs[ord]
+    truth &lt;- truth[ord]
+    
+    TPR = cumsum(truth)/max(1, sum(truth))
+    FPR = cumsum(!truth)/max(1, sum(!truth))
+    
+    dup &lt;- c(probs[-1] &gt;= probs[-length(probs)], FALSE)
+    TPR &lt;- c(0, TPR[!dup], 1)
+    FPR &lt;- c(0, FPR[!dup], 1)
+    
+    n &lt;- length(TPR)
+    auc &lt;- sum(((TPR[-1] + TPR[-n])/2) * (FPR[-1] - 
+        FPR[-n]))
+    
+    data.frame(acc, sens, spec, ppv, auc)
+}
+class_diag(car1$prob, car1$frontal)</code></pre>
+<pre><code>##         acc      sens       spec      ppv       auc
+## 1 0.6466639 0.9871237 0.03176141 0.648051 0.5456314</code></pre>
+<pre class="r"><code># ROC Plot:
+library(plotROC)
+ROCplot &lt;- ggplot(car1) + geom_roc(aes(d = frontal, 
+    m = prob), n.cuts = 0)
+ROCplot</code></pre>
+<p><img src="../../project/project2_files/figure-html/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>calc_auc(ROCplot)</code></pre>
+<pre><code>##   PANEL group       AUC
+## 1     1    -1 0.5456314</code></pre>
+<pre class="r"><code># Density Plot:
+car1$logit &lt;- predict(fit2, type = &quot;link&quot;)
+car1 %&gt;% mutate(frontal = as.factor(frontal)) %&gt;% ggplot() + 
+    geom_density(aes(logit, fill = frontal))</code></pre>
+<p><img src="../../project/project2_files/figure-html/unnamed-chunk-5-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><strong>When the occupant is alive and an airbag was present, the odds of a frontal impact is 1.6448, which is significant. When controlling for airbag, the odds of frontal impact when the occupant is dead is 0.50251, which is also significant. When controlling for dead factor, the odds of frontal impact when there was no airbag is 1.3354, which is also significant. A confusion matrix was made in regards to this prediction and accuracy, sensitivity, specificity, and PPV were hand calculated using this data. These data points were also found using the class_diag function where an AUC was also given. The accuracy, which is the proportion of total cases that was classified correctly was found to be 0.6467. The sensitivity, which is the true positive rate, was found to be 0.9871. The specificity, which is the true negative rate, was found to be 0.03176. The ppv or proportion of cases classified as frontal that really are is 0.648051. The AUC was found to be 0.5456314. This is a bad AUC value. A density plot was made to visualize the above findings. A ROC plot was also made and also reported the same AUC value, which was still bad. This is due to the fact that while the true positive rate was very high, the true negative rate was very low and therefore the model is not a good predictor of frontal status. </strong></p>
+</div>
+<div id="logistic-regression-predicting-a-binary-variable-with-all-predictors" class="section level2">
+<h2>Logistic Regression predicting a Binary Variable with all predictors:</h2>
+<pre class="r"><code>head(car1)</code></pre>
+<pre><code>## # A tibble: 6 x 22
+##      X1 dvcat weight dead  airbag seatbelt frontal sex   ageOFocc yearacc
+##   &lt;dbl&gt; &lt;chr&gt;  &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;      &lt;dbl&gt; &lt;chr&gt;    &lt;dbl&gt;   &lt;dbl&gt;
+## 1     1 25-39   25.1 alive none   belted         1 f           26    1997
+## 2     2 10-24   25.1 alive airbag belted         1 f           72    1997
+## 3     3 10-24   32.4 alive none   none           1 f           69    1997
+## 4     4 25-39  495.  alive airbag belted         1 f           53    1997
+## 5     5 25-39   25.1 alive none   belted         1 f           32    1997
+## 6     6 40-54   25.1 alive none   belted         1 f           22    1997
+## # … with 12 more variables: yearVeh &lt;dbl&gt;, abcat &lt;chr&gt;, occRole &lt;chr&gt;,
+## #   deploy &lt;dbl&gt;, injSeverity &lt;dbl&gt;, caseid &lt;chr&gt;, inj_c &lt;dbl&gt;, prob &lt;dbl&gt;,
+## #   predicted &lt;dbl&gt;, TPR &lt;dbl&gt;, FPR &lt;dbl&gt;, logit &lt;dbl&gt;</code></pre>
+<pre class="r"><code>carnew &lt;- car1 %&gt;% select(-X1, -dvcat, -weight, -caseid, 
+    -inj_c, -prob, -predicted, -FPR, -TPR, -logit)
+fit3 &lt;- glm(frontal ~ ., family = &quot;binomial&quot;, data = carnew)
+summary(fit3)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = frontal ~ ., family = &quot;binomial&quot;, data = carnew)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -2.1538  -0.9364   0.6578   0.8387   1.9975  
+## 
+## Coefficients: (2 not defined because of singularities)
+##                 Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)   -1.065e+02  1.733e+01  -6.146 7.95e-10 ***
+## deaddead      -6.517e-01  6.861e-02  -9.498  &lt; 2e-16 ***
+## airbagnone    -4.771e-01  4.601e-02 -10.370  &lt; 2e-16 ***
+## seatbeltnone   3.329e-01  3.332e-02   9.990  &lt; 2e-16 ***
+## sexm           1.823e-01  2.866e-02   6.358 2.04e-10 ***
+## ageOFocc      -1.678e-03  7.882e-04  -2.129 0.033239 *  
+## yearacc        3.343e-02  8.624e-03   3.877 0.000106 ***
+## yearVeh        2.064e-02  3.824e-03   5.397 6.76e-08 ***
+## abcatnodeploy -2.185e+00  4.035e-02 -54.148  &lt; 2e-16 ***
+## abcatunavail          NA         NA      NA       NA    
+## occRolepass   -1.381e-01  3.437e-02  -4.018 5.86e-05 ***
+## deploy                NA         NA      NA       NA    
+## injSeverity   -1.342e-01  1.233e-02 -10.884  &lt; 2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 33950  on 26062  degrees of freedom
+## Residual deviance: 30090  on 26052  degrees of freedom
+## AIC: 30112
+## 
+## Number of Fisher Scoring iterations: 4</code></pre>
+<pre class="r"><code>prob2 &lt;- predict(fit3, type = &quot;response&quot;)
+class_diag(prob2, carnew$frontal)</code></pre>
+<pre><code>##         acc      sens      spec       ppv       auc
+## 1 0.7166865 0.8795827 0.4224806 0.7333864 0.7143982</code></pre>
+<pre class="r"><code># CV:
+set.seed(1234)
+k = 10
+
+data1 &lt;- carnew[sample(nrow(carnew)), ]
+folds &lt;- cut(seq(1:nrow(carnew)), breaks = k, labels = F)
+
+diags &lt;- NULL
+for (i in 1:k) {
+    train &lt;- data1[folds != i, ]
+    test &lt;- data1[folds == i, ]
+    
+    truth &lt;- test$frontal
+    
+    fit4 &lt;- glm(frontal ~ ., data = train, family = &quot;binomial&quot;)
+    probs &lt;- predict(fit4, newdata = test, type = &quot;response&quot;)
+    
+    diags &lt;- rbind(diags, class_diag(probs, truth))  #CV DIAGNOSTICS FOR EACH FOLD
+}
+
+summarize_all(diags, mean)</code></pre>
+<pre><code>##        acc      sens      spec       ppv       auc
+## 1 0.716303 0.8794035 0.4217966 0.7331015 0.7138886</code></pre>
+<pre class="r"><code># LASSO:
+library(glmnet)
+set.seed(1234)
+y &lt;- as.matrix(carnew$frontal)  #grab response
+x &lt;- model.matrix(frontal ~ ., data = carnew)[, -1]  #grab predictors
+cv &lt;- cv.glmnet(x, y, family = &quot;binomial&quot;)
+lasso &lt;- glmnet(x, y, family = &quot;binomial&quot;, lambda = cv$lambda.1se)
+coef(lasso)</code></pre>
+<pre><code>## 13 x 1 sparse Matrix of class &quot;dgCMatrix&quot;
+##                          s0
+## (Intercept)   -12.643659045
+## deaddead       -0.460727539
+## airbagnone      .          
+## seatbeltnone    0.131020873
+## sexm            0.089204115
+## ageOFocc        .          
+## yearacc         0.006734557
+## yearVeh         .          
+## abcatnodeploy  -1.403436289
+## abcatunavail    .          
+## occRolepass     .          
+## deploy          0.532004372
+## injSeverity    -0.075603928</code></pre>
+<pre class="r"><code>lasso_dat &lt;- carnew %&gt;% mutate(dead = ifelse(dead == 
+    &quot;dead&quot;, 1, 0)) %&gt;% mutate(nobelt = ifelse(seatbelt == 
+    &quot;none&quot;, 1, 0)) %&gt;% mutate(male = ifelse(sex == 
+    &quot;m&quot;, 1, 0)) %&gt;% mutate(nobag = ifelse(abcat == 
+    &quot;nodeploy&quot;, 1, 0)) %&gt;% mutate(nobelt = ifelse(seatbelt == 
+    &quot;none&quot;, 1, 0)) %&gt;% select(dead, nobelt, male, yearacc, 
+    nobag, deploy, injSeverity, frontal)
+
+# New model
+set.seed(1234)
+k = 10
+
+data1 &lt;- lasso_dat[sample(nrow(lasso_dat)), ]  #put dataset in random order
+folds &lt;- cut(seq(1:nrow(lasso_dat)), breaks = k, labels = F)  #create folds
+
+diags &lt;- NULL
+for (i in 1:k) {
+    # FOR EACH OF 10 FOLDS
+    train &lt;- data1[folds != i, ]  # CREATE TRAINING SET
+    test &lt;- data1[folds == i, ]  # CREATE TESTING SET
+    
+    truth &lt;- test$frontal
+    
+    fit10 &lt;- glm(frontal ~ ., data = train, family = &quot;binomial&quot;)
+    probs &lt;- predict(fit10, newdata = test, type = &quot;response&quot;)
+    
+    diags &lt;- rbind(diags, class_diag(probs, truth))  #CV DIAGNOSTICS FOR EACH FOLD
+}
+
+summarize_all(diags, mean)</code></pre>
+<pre><code>##         acc      sens      spec       ppv      auc
+## 1 0.7168402 0.8805333 0.4212613 0.7331718 0.712281</code></pre>
+<p><strong>First, all non-relevant variables were removed from the data set. Then, a class_diag function was run on the data. This found an accuracy of 0.7167. The sensitivity or true positive rate is 0.8795, which is less than the 2 variable model. However, the specificity or true negative rate for this model is 0.422, which is way greater than the one for the two variable model. The ppv or proportion of cases classified as frontal that were actually frontal, was found to be 0.7334, which is also increased from the previous model. The new AUC for the model is 0.714, which is a fair AUC and a great improvement from the previous model. Then, a 10-fold CV was run with an accuracy of 0.716, a sensitivity of 0.879, a specificity of 0.4218, a ppv of 0.733, and an AUC of 0.713. These numbers barely deviated from the normal model. The AUC only decreased by very little and is still in the fair range. This shows the model is not over fitting. After running a lasso, it can be seen that the dead variable was retained, as was the seatbelt = none variable, the sex= m, yearacc, yearVeh, abcat= nodeploy, the deploy variable, and injSeverity variable. The 10-fold CV on this lasso data showed an AUC of 0.712. This is a 0.001 decrease from the original CV and a 0.002 decrease from the original AUC. There is not much difference in these AUC’s and the conclusion made about the AUC is still that the model is a “fair” predictor of frontal status. </strong></p>
+<pre><code>## R version 3.6.1 (2019-07-05)
+## Platform: x86_64-pc-linux-gnu (64-bit)
+## Running under: Ubuntu 18.04.5 LTS
+## 
+## Matrix products: default
+## BLAS:   /stor/system/opt/R/R-3.6.1/lib/R/lib/libRblas.so
+## LAPACK: /stor/system/opt/R/R-3.6.1/lib/R/lib/libRlapack.so
+## 
+## locale:
+##  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+##  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+##  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+##  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+##  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+## [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+## 
+## attached base packages:
+## [1] stats     graphics  grDevices utils     datasets  methods   base     
+## 
+## other attached packages:
+##  [1] glmnet_4.0-2    Matrix_1.3-2    plotROC_2.2.1   car_3.0-10     
+##  [5] carData_3.0-4   lmtest_0.9-38   zoo_1.8-8       sandwich_3.0-0 
+##  [9] forcats_0.5.0   stringr_1.4.0   purrr_0.3.4     readr_1.4.0    
+## [13] tidyr_1.1.2     tibble_3.0.4    tidyverse_1.3.0 rstatix_0.6.0  
+## [17] ggplot2_3.3.3   dplyr_1.0.2     ggExtra_0.9     mvtnorm_1.1-1  
+## 
+## loaded via a namespace (and not attached):
+##  [1] nlme_3.1-151      fs_1.5.0          lubridate_1.7.9.2 httr_1.4.2       
+##  [5] tools_3.6.1       backports_1.2.1   utf8_1.1.4        R6_2.5.0         
+##  [9] DBI_1.1.0         mgcv_1.8-33       colorspace_2.0-0  withr_2.3.0      
+## [13] tidyselect_1.1.0  curl_4.3          compiler_3.6.1    cli_2.2.0        
+## [17] rvest_0.3.6       formatR_1.7       xml2_1.3.2        labeling_0.4.2   
+## [21] bookdown_0.21     scales_1.1.1      digest_0.6.27     foreign_0.8-71   
+## [25] rmarkdown_2.6     rio_0.5.16        pkgconfig_2.0.3   htmltools_0.5.0  
+## [29] dbplyr_2.0.0      fastmap_1.0.1     rlang_0.4.10      readxl_1.3.1     
+## [33] rstudioapi_0.13   shiny_1.5.0       shape_1.4.5       farver_2.0.3     
+## [37] generics_0.1.0    jsonlite_1.7.2    zip_2.1.1         magrittr_2.0.1   
+## [41] Rcpp_1.0.5        munsell_0.5.0     fansi_0.4.1       abind_1.4-5      
+## [45] lifecycle_0.2.0   stringi_1.5.3     yaml_2.2.1        plyr_1.8.6       
+## [49] grid_3.6.1        promises_1.1.1    crayon_1.3.4      miniUI_0.1.1.1   
+## [53] lattice_0.20-41   haven_2.3.1       splines_3.6.1     hms_0.5.3        
+## [57] knitr_1.30        pillar_1.4.7      codetools_0.2-18  reprex_0.3.0     
+## [61] glue_1.4.2        evaluate_0.14     blogdown_0.20     data.table_1.13.6
+## [65] modelr_0.1.8      foreach_1.5.1     vctrs_0.3.6       httpuv_1.5.4     
+## [69] cellranger_1.1.0  gtable_0.3.0      assertthat_0.2.1  xfun_0.20        
+## [73] openxlsx_4.2.3    mime_0.9          xtable_1.8-4      broom_0.7.3      
+## [77] later_1.1.0.1     survival_3.2-7    iterators_1.0.13  ellipsis_0.3.1</code></pre>
+<pre><code>## [1] &quot;2021-05-08 23:46:19 CDT&quot;</code></pre>
+<pre><code>##                                        sysname 
+##                                        &quot;Linux&quot; 
+##                                        release 
+##                           &quot;4.15.0-142-generic&quot; 
+##                                        version 
+## &quot;#146-Ubuntu SMP Tue Apr 13 01:11:19 UTC 2021&quot; 
+##                                       nodename 
+##                   &quot;educcomp01.ccbb.utexas.edu&quot; 
+##                                        machine 
+##                                       &quot;x86_64&quot; 
+##                                          login 
+##                                      &quot;unknown&quot; 
+##                                           user 
+##                                       &quot;mis696&quot; 
+##                                 effective_user 
+##                                       &quot;mis696&quot;</code></pre>
+</div>
+
+            
+        <hr>         <div class="related-posts">
+                <h5>Related Posts</h5>
+                
+              </div> 
+            </div>
+          </div>
+
+   <hr>  <div class="disqus">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+
+    (function() {
+      
+      
+      if (window.location.hostname == "localhost")
+        return;
+
+      var disqus_shortname = '';
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div> 
+        </div>
+      </div>
+    </div>
+
+    
+    <footer>
+  <div id="footer">
+    <div class="container">
+      <p class="text-muted">&copy; All rights reserved. Powered by <a href="https://gohugo.io/">Hugo</a> and
+      <a href="http://www.github.com/nurlansu/hugo-sustain/">sustain</a> with ♥</p>
+    </div>
+  </div>
+</footer>
+<div class="footer"></div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="../../js/docs.min.js"></script>
+<script src="../../js/main.js"></script>
+
+<script src="../../js/ie10-viewport-bug-workaround.js"></script>
+
+
+    
+  </body>
+</html>

@@ -1,0 +1,280 @@
+---
+title: "Project 1"
+author: "Mia Soto"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: false
+---
+
+```{r global_options, include=FALSE}
+#DO NOT EDIT THIS CHUNK OR ANYTHING ABOVE IT!
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE, fig.align = "center", warning = F, message = F, tidy=T, tidy.opts=list(width.cutoff=50), R.options=list(max.print=100,dplyr.print_max=100))
+```
+
+## Mia Soto eid:mis696
+
+> **Introduction**
+>  This data set contains data from car crashes. There are 15 variables in this data set with 26,217 observations, and I will discuss the most notable variables. The first notable variable is a categorical variable called dead that classifies the victim of the crash as alive or dead. Two other important variables are airbag and seatbelt, which are two categorical variables with the option none or airbag/belted, respectively. Another variable is called frontal and is a binary variable, with the options 0 for non-frontal and 1 for frontal impact. The victims are also classified by sex, either f for female or m for male. The age of the victim is shown as the numeric variable, ageOFocc, with 82 distinct values. The year of the accident is also provided as the numeric variable, yearacc, with 6 distinct values. The year of the model of the car that was in the accident is a numeric variable with 46 distinct values, shown as the variable yearVeh. The deploy variable shows a binary value, 0 for no airbags or unavailable and 1 for deployed airbags. The last important variable shows severity of injury as a variable called injSeverity with 7 distinct numeric variables representing a range of injury from none, possible injury, no incapacity, incapacity, killed, unknown, or prior death. 
+
+---
+
+## MANOVA:
+
+##### 
+
+```{R}
+#assumptions:
+library(mvtnorm); library(ggExtra)
+library(dplyr)
+library(ggplot2)
+library(rstatix)
+library(tidyverse)
+#test for multivariate normality for a shorter dataset
+car <- read_csv("car.csv") 
+car%>%na.omit->car1
+head(car1, 5000)->carshort
+group1 <- carshort$abcat
+DVnew <- carshort %>% select(ageOFocc,yearacc,yearVeh,injSeverity)
+sapply(split(DVnew,group1), mshapiro_test)
+
+#homogeneity test for a shorter dataset
+box_m(DVnew, group1)
+
+#MANOVA test
+man1<-manova(cbind(ageOFocc,yearacc,yearVeh,injSeverity)~abcat, data=car1)
+summary(man1)
+
+#ANOVA
+summary.aov(man1) 
+
+#T-Tests
+pairwise.t.test(car1$ageOFocc,car1$abcat, p.adj="none")
+pairwise.t.test(car1$yearacc,car1$abcat, p.adj="none")
+pairwise.t.test(car1$yearVeh,car1$abcat, p.adj="none")
+pairwise.t.test(car1$injSeverity,car1$abcat, p.adj="none")
+
+#Number Tests, Probability of Type I error and Bonferroni Correction
+12+1+4
+0.05/17
+1-(0.95^17)
+
+
+
+```
+
+
+**The categorical variable, abcat, which categorizes whether the airbag was deployed, not deployed, or unavailable was tested against 5 relevant numeric variables ageOFocc, yearacc, yearVeh, and injSeverity. The null hypothesis for the MANOVA test was that for all the numeric variables used, there was not difference in mean between the categorical groups. The alternative hypothesis was that for at least one numeric variable the means differed between the categorical groups. The assumptions of multivariate normality and homogeneity were tested using a shorter data set for simplicity. These tests both showed a p-value less than 0.05 meaning the assumptions for the data set were not met. The MANOVA test showed a p-value way less than 0.05 meaning that I reject the null hypothesis and there was a difference in means for at least one of the numeric variables across the categorical grouping. Then an ANOVA test was done on each variable all showing a p-value of less than 0.05 meaning that each variable shows a mean difference across groups and I can reject the null hypothesis. Then a t-test was done for each variable to find exactly which groups differ from one another for each numeric variable.The ageOFocc variable also showed a p-value of less than 0.0.0029 for each group and therefore it can be concluded that the mean age for each categorical group is vastly different from one another and the null hypothesis can be rejected. The yearacc variable showed a p-value less than 0.0.0029 only between the deploy and unavail and nodeploy and unavail which means the means for yearacc for these groups are very different from one another and the null hypothesis can be rejected, the yearVeh variable showed this same pattern. The injSeverity variable showed a p-value less than 0.0029 between the deploy and nodeploy groups and the nodeploy and unavail groups. This means that the means for these two groups are different and I can reject the null hypothesis for these groups. One MANOVA, 4 ANOVA's, and 12 post-hoc t-tests were performed. Therefore, 17 total tests were performed. The probability of at least one type 1 error occurring is 0.582. The bonferroni correction is 0.0029 and this was used when making conclusions about the t-tests **
+
+## Randomization Test:
+
+```{R}
+car1%>%group_by(dead)%>%
+  summarize(means=mean(ageOFocc))%>%summarize(`mean_diff`=diff(means))
+
+rand_dist<-vector()
+for(i in 1:5000){
+new<-data.frame(age=sample(car1$ageOFocc),condition=car1$dead)
+rand_dist[i]<-mean(new[new$condition=="dead",]$age)-
+mean(new[new$condition=="alive",]$age)}
+mean(rand_dist>7.74249 | rand_dist < -7.74249) 
+{hist(rand_dist,main="",ylab=""); abline(v = c(-7.74249, 7.74249),col="red")}
+```
+**A randomization test was performed between age of the occupant and the alive or dead status. The mean difference between the alive and dead groups was 7.74249 years before the randomization test. A p-value for the randomization test was found to be 0. The null hypothesis for the test is that mean age for the alive and dead groups is the same. The alternative hypothesis is that the groups show a difference in mean age. Because the p-value is less than 0.05, I reject the null hypothesis and can conclude that the mean difference is not due to random chance alone. **
+
+## Linear Regression:  
+
+```{R}
+library(sandwich); library(lmtest)
+car1$inj_c <- car1$injSeverity - mean(car1$injSeverity)
+head(car1)
+fit<-lm(ageOFocc~dead*abcat, data=car1)
+summary(fit)
+#Visualization
+ggplot(car1, aes(x=abcat, y=ageOFocc,group=dead))+geom_point(aes(color=dead))+
+geom_smooth(method="lm",formula=y~1,se=F,fullrange=T,aes(color=dead))+
+theme(legend.position=c(.9,.19))+xlab("")
+#Check for homoskedasticity
+library(car)
+leveneTest(fit) 
+#Check for normality
+hist(fit$residuals)
+#Normal SE
+summary(fit)$coef[,1:2]
+#Robust SE
+coeftest(fit, vcov = vcovHC(fit))[,1:2]
+
+
+```
+**The predicted age for an occupant that is alive with a deployed airbag is 37.08. Dead occupants with a deployed airbag have a predicted age 7.7759 years older than alive people with a deployed airbag. The predicted age for alive occupants with an airbag that didn't deploy is 1.7084 years older than an alive occupant with a deployed airbag. The predicted age for an alive occupant with an unavailable airbag is 1.2998 years younger than an alive occupant with a deployed airbag. The slope of non deployed airbags for dead occupants on age is -2.3336. The slope of unavailable airbags for dead occupants on age is -1.0089. The r-squared value for the regression is 0.01208. This means that 0.01208 is the proportion of the variation in the outcome is explained by the model. Linearity cannot be checked because two categorical variables are interacting in the model. Homoskedasticity was checked using a Levene test. This test has a null hypothesis that the equal variance assumption is met. Because the p-value is less than 0.05, the null hypothesis can be rejected and it can be concluded that the model does not follow homoskedasticity. The test for normality also revealed a histogram with a non-normal curve, meaning it can be concluded that the data also does not follow the normality assumption. Lastly, a coef test was run on robust errors. This revealed increased standard errors for the dead category, and the dead interaction with both nodeploy and unavail. The rest of the standard errors, while not exactly the same, stayed relatively the same as the normal standard errors. A plot of the linear regression is shown above.  **
+
+## Bootstrapping: 
+
+```{R}
+resids<-fit$residuals 
+fitted<-fit$fitted.values 
+resid_resamp<-replicate(5000,{
+new_resids<-sample(resids,replace=TRUE) 
+car1$new_y<-fitted+new_resids 
+fitnew<-lm(new_y~dead*abcat,data=car1)
+coef(fitnew) 
+})
+resid_resamp%>%t%>%as.data.frame%>%summarize_all(sd)
+
+```
+
+**These bootstrapped standard errors were found by using residuals. The bootstrapped standard errors are very very close to the normal standard errors and therefore only show difference with the robust standard errors in the same way the normal standard errors compare with the robust standard errors. **
+
+##Logistic Regression predicting a Binary Variable with 2 predictors:
+```{R}
+#Regression
+head(car1)
+fit2<-glm(frontal~dead+airbag, family="binomial", data=car1)
+coeftest(fit2)
+exp(coeftest(fit2))
+
+#Confusion Matrix
+
+car1$prob <- predict(fit2,type="response")
+car1$predicted <- ifelse(car1$prob>.5,1,0) 
+table(truth=car1$frontal, prediction=car1$predicted)%>%addmargins
+
+#Accuracy
+(295+16559)/26063
+#Specificity
+(295/9288)
+#Sensitivity
+16559/16775->car1$TPR
+#PPV
+16559/25552
+#FPR
+((8993)/9288)->car1$FPR
+
+
+#AUC
+class_diag<-function(probs,truth){
+  
+  tab<-table(factor(probs>.5,levels=c("FALSE","TRUE")),truth)
+  acc=sum(diag(tab))/sum(tab)
+  sens=tab[2,2]/colSums(tab)[2]
+  spec=tab[1,1]/colSums(tab)[1]
+  ppv=tab[2,2]/rowSums(tab)[2]
+
+  if(is.numeric(truth)==FALSE & is.logical(truth)==FALSE) truth<-as.numeric(truth)-1
+  
+  #CALCULATE EXACT AUC
+  ord<-order(probs, decreasing=TRUE)
+  probs <- probs[ord]; truth <- truth[ord]
+  
+  TPR=cumsum(truth)/max(1,sum(truth)) 
+  FPR=cumsum(!truth)/max(1,sum(!truth))
+  
+  dup<-c(probs[-1]>=probs[-length(probs)], FALSE)
+  TPR<-c(0,TPR[!dup],1); FPR<-c(0,FPR[!dup],1)
+  
+  n <- length(TPR)
+  auc<- sum( ((TPR[-1]+TPR[-n])/2) * (FPR[-1]-FPR[-n]) )
+
+  data.frame(acc,sens,spec,ppv,auc)
+}
+class_diag(car1$prob, car1$frontal)
+
+
+#ROC Plot:
+library(plotROC) 
+ROCplot<-ggplot(car1)+geom_roc(aes(d=frontal,m=prob), n.cuts=0) 
+ROCplot
+calc_auc(ROCplot)
+
+#Density Plot:
+car1$logit<-predict(fit2,type="link")
+car1 %>% mutate(frontal=as.factor(frontal)) %>% ggplot() + geom_density(aes(logit, fill=frontal))
+
+
+```
+
+**When the occupant is alive and an airbag was present, the odds of a frontal impact is 1.6448, which is significant. When controlling for airbag, the odds of frontal impact when the occupant is dead is 0.50251, which is also significant. When controlling for dead factor, the odds of frontal impact when there was no airbag is 1.3354, which is also significant. A confusion matrix was made in regards to this prediction and accuracy, sensitivity, specificity, and PPV were hand calculated using this data. These data points were also found using the class_diag function where an AUC was also given. The accuracy, which is the proportion of total cases that was classified correctly was found to be 0.6467. The sensitivity, which is the true positive rate, was found to be 0.9871. The specificity, which is the true negative rate, was found to be 0.03176. The ppv or proportion of cases classified as frontal that really are is 0.648051. The AUC was found to be 0.5456314. This is a bad AUC value. A density plot was made to visualize the above findings. A ROC plot was also made and also reported the same AUC value, which was still bad. This is due to the fact that while the true positive rate was very high, the true negative rate was very low and therefore the model is not a good predictor of frontal status. **
+
+
+## Logistic Regression predicting a Binary Variable with all predictors:
+
+```{R}
+head(car1)
+car1%>%select(-X1,-dvcat, -weight,-caseid, -inj_c, -prob, -predicted, -FPR, -TPR, -logit)->carnew
+fit3<-glm(frontal~., family="binomial", data=carnew)
+summary(fit3)
+predict(fit3, type="response")->prob2
+class_diag(prob2, carnew$frontal)
+
+#CV:
+set.seed(1234)
+k=10
+
+data1<-carnew[sample(nrow(carnew)),] 
+folds<-cut(seq(1:nrow(carnew)),breaks=k,labels=F)
+
+diags<-NULL
+for(i in 1:k){          
+train<-data1[folds!=i,] 
+test<-data1[folds==i,]  
+
+truth<-test$frontal
+
+fit4<- glm(frontal~., data=train, family="binomial")
+probs<- predict(fit4, newdata=test, type="response")
+
+diags<-rbind(diags,class_diag(probs,truth)) #CV DIAGNOSTICS FOR EACH FOLD
+}
+
+summarize_all(diags,mean)
+
+#LASSO:
+library(glmnet)
+set.seed(1234)
+y<-as.matrix(carnew$frontal) #grab response
+x<-model.matrix(frontal~.,data=carnew)[,-1] #grab predictors
+cv<-cv.glmnet(x,y,family="binomial")
+lasso<-glmnet(x,y,family="binomial",lambda=cv$lambda.1se)
+coef(lasso)
+
+lasso_dat <- carnew %>% mutate(dead= ifelse(dead=="dead", 1, 0)) %>% mutate(nobelt= ifelse(seatbelt=="none", 1, 0))%>%mutate(male= ifelse(sex=="m", 1, 0)) %>% mutate(nobag= ifelse(abcat=="nodeploy", 1, 0))%>% mutate(nobelt= ifelse(seatbelt=="none", 1, 0))%>%  select(dead, nobelt, male, yearacc, nobag, deploy, injSeverity, frontal)
+
+#New model
+set.seed(1234)
+k=10
+
+data1<-lasso_dat[sample(nrow(lasso_dat)),] #put dataset in random order
+folds<-cut(seq(1:nrow(lasso_dat)),breaks=k,labels=F) #create folds
+
+diags<-NULL
+for(i in 1:k){          # FOR EACH OF 10 FOLDS
+train<-data1[folds!=i,] # CREATE TRAINING SET
+test<-data1[folds==i,]  # CREATE TESTING SET
+
+truth<-test$frontal
+
+fit10<- glm(frontal~., data=train, family="binomial")
+probs<- predict(fit10, newdata=test, type="response")
+
+diags<-rbind(diags,class_diag(probs,truth)) #CV DIAGNOSTICS FOR EACH FOLD
+}
+
+summarize_all(diags,mean)
+
+
+
+```
+
+**First, all non-relevant variables were removed from the data set. Then, a class_diag function was run on the data. This found an accuracy of 0.7167. The sensitivity or true positive rate is 0.8795, which is less than the 2 variable model. However, the specificity or true negative rate for this model is 0.422, which is way greater than the one for the two variable model. The ppv or proportion of cases classified as frontal that were actually frontal, was found to be 0.7334, which is also increased from the previous model. The new AUC for the model is 0.714, which is a fair AUC and a great improvement from the previous model. Then, a 10-fold CV was run with an accuracy of 0.716, a sensitivity of 0.879, a specificity of 0.4218, a ppv of 0.733, and an AUC of 0.713. These numbers barely deviated from the normal model. The AUC only decreased by very little and is still in the fair range. This shows the model is not over fitting. After running a lasso, it can be seen that the dead variable was retained, as was the seatbelt = none variable, the sex= m, yearacc, yearVeh, abcat= nodeploy, the deploy variable, and injSeverity variable. The 10-fold CV on this lasso data showed an AUC of 0.712. This is a 0.001 decrease from the original CV and a 0.002 decrease from the original AUC. There is not much difference in these AUC's and the conclusion made about the AUC is still that the model is a "fair" predictor of frontal status. **
+
+
+
+
+```{R, echo=F}
+## DO NOT DELETE THIS BLOCK!
+sessionInfo()
+Sys.time()
+Sys.info()
+```

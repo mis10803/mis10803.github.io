@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Mia Soto" />
+    
+    <link rel="shortcut icon" type="image/x-icon" href="../../img/favicon.ico">
+    <title>Project 1</title>
+    <meta name="generator" content="Hugo 0.83.1" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="../../css/main.css" />
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,200bold,400old" />
+    
+    <!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+			<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
+
+    
+  </head>
+
+  <body>
+    <div id="wrap">
+      
+      <nav class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="../../"><i class="fa fa-home"></i></a>
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <div class="navbar-collapse collapse" id="navbar">
+      <ul class="nav navbar-nav navbar-right">
+      
+        
+        <li><a href="../../post/">BLOG</a></li>
+        
+        <li><a href="../../projects/">PROJECTS</a></li>
+        
+        <li><a href="../../resume/">RESUME</a></li>
+        
+      
+      </ul>
+    </div>
+  </div>
+</nav>
+
+      <div class="container">
+        <div class="blog-post">
+          <h3>
+            <strong><a href="../../project/project1/">Project 1</a></strong>
+          </h3>
+        </div>
+ 
+<div class="blog-title">
+          <h4>
+         January 1, 0001 
+            &nbsp;&nbsp;
+            
+          </h4>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="blogpost">
+              
+<script src="../../rmarkdown-libs/htmlwidgets/htmlwidgets.js"></script>
+<script src="../../rmarkdown-libs/plotly-binding/plotly.js"></script>
+<script src="../../rmarkdown-libs/typedarray/typedarray.min.js"></script>
+<script src="../../rmarkdown-libs/jquery/jquery.min.js"></script>
+<link href="../../rmarkdown-libs/crosstalk/css/crosstalk.css" rel="stylesheet" />
+<script src="../../rmarkdown-libs/crosstalk/js/crosstalk.min.js"></script>
+<link href="../../rmarkdown-libs/plotly-htmlwidgets-css/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="../../rmarkdown-libs/plotly-main/plotly-latest.min.js"></script>
+
+
+<div id="mia-soto-eidmis696" class="section level2">
+<h2>Mia Soto eid:mis696</h2>
+<blockquote>
+<p><strong>Introduction</strong>
+I chose to use personal data for this project as I would love to see how this class can apply to an analysis of my daily life. The two data sets I used were Netflix viewing data and Apple Watch workout statistics. The Netflix viewing data for the year of 2020 was requested from Netflix for my account. Then, I took the data and altered it to make it more fitting for the project. Originally the data contained the names of the shows I watched each day, but I wanted to know the minutes of viewing time, so I hand calculated the minutes of Netflix viewed each day in 2020. Then, I used the Acitivity app on my watch to make a table of my Move goal calories, my Stand goal hours, and my Exercise goal minutes for everyday in 2020. There is data for everyday of 2020 even if it is given as 0 because I wanted to see if there was a correlation between my activity throughout the day and how much Netflix I watched in 2020. This is super interesting to me because I think 2020 was quite the weird year in which I picked up many new hobbies, including working out and wacthing documentaries, and I would love to see the overall change this made in my lifestyle throughout the year. I expect to see an inverse relationship between Netflix viewing time and Activity statistics overall, because if I was more active, I was less likely to be sitting on the couch and watching Netflix, and I expect to see this relationship within the data.</p>
+</blockquote>
+<hr />
+</div>
+<div id="joining" class="section level2">
+<h2>Joining:</h2>
+<div id="i-first-imported-my-csvs-into-rstudio.-then-i-joined-the-two-datasets-together-below." class="section level5">
+<h5>I first imported my CSV’s into Rstudio. Then, I joined the two datasets together below.</h5>
+<pre class="r"><code>library(tidyverse)
+netflix &lt;- read_csv(&quot;Netflix.csv&quot;)
+workout &lt;- read_csv(&quot;Workout.csv&quot;)
+
+yearstat &lt;- workout %&gt;% full_join(netflix)
+head(yearstat)</code></pre>
+<pre><code>## # A tibble: 6 x 5
+##   Date       `Move (cals)` `Exercise (mins)` `Stand (hrs)` `Minutes Watched`
+##   &lt;chr&gt;              &lt;dbl&gt;             &lt;dbl&gt;         &lt;dbl&gt;             &lt;dbl&gt;
+## 1 01/01/2020             0                 0             0                 0
+## 2 01/02/2020             0                 0             0                 0
+## 3 01/03/2020           285                 7            13                 0
+## 4 01/04/2020            98                 3             4                 0
+## 5 01/05/2020           132                 6             6                 0
+## 6 01/06/2020           279                10            11               288</code></pre>
+<p><strong>I chose to do a full join for my data set because I wanted all of the columns in my data sets to appear for the new data. No rows were lost because all rows are complete meaning there is no date missing from either data set. This is good because more complete data will provide a more accurate analysis of the statistics. This fully joined data shows all columns from the Netflix data and the Activity data joined by the date as a full join was done.</strong></p>
+</div>
+</div>
+<div id="mutating" class="section level2">
+<h2>Mutating:</h2>
+<pre class="r"><code>glimpse(yearstat)</code></pre>
+<pre><code>## Rows: 366
+## Columns: 5
+## $ Date              &lt;chr&gt; &quot;01/01/2020&quot;, &quot;01/02/2020&quot;, &quot;01/03/2020&quot;, &quot;01/04/20…
+## $ `Move (cals)`     &lt;dbl&gt; 0, 0, 285, 98, 132, 279, 158, 253, 164, 260, 278, 1…
+## $ `Exercise (mins)` &lt;dbl&gt; 0, 0, 7, 3, 6, 10, 2, 6, 4, 5, 2, 2, 11, 7, 12, 11,…
+## $ `Stand (hrs)`     &lt;dbl&gt; 0, 0, 13, 4, 6, 11, 8, 12, 8, 15, 9, 5, 15, 11, 12,…
+## $ `Minutes Watched` &lt;dbl&gt; 0, 0, 0, 0, 0, 288, 84, 0, 84, 60, 0, 0, 0, 84, 300…</code></pre>
+<pre class="r"><code>longstat &lt;- yearstat %&gt;% separate(Date, into = c(&quot;month&quot;, 
+    &quot;day&quot;, &quot;year&quot;))
+intstat &lt;- longstat %&gt;% mutate_if(is.character, as.integer)
+catdat &lt;- intstat %&gt;% mutate(monthcat = case_when(month == 
+    1 ~ &quot;Jan&quot;, month == 2 ~ &quot;Feb&quot;, month == 3 ~ &quot;Mar&quot;, 
+    month == 4 ~ &quot;Apr&quot;, month == 5 ~ &quot;May&quot;, month == 
+        6 ~ &quot;Jun&quot;, month == 7 ~ &quot;Jul&quot;, month == 8 ~ 
+        &quot;Aug&quot;, month == 9 ~ &quot;Sep&quot;, month == 10 ~ &quot;Oct&quot;, 
+    month == 11 ~ &quot;Nov&quot;, month == 12 ~ &quot;Dec&quot;))
+mindat &lt;- catdat %&gt;% mutate(`Stand (min)` = 60 * `Stand (hrs)`)
+mincat &lt;- mindat %&gt;% mutate(tvcat_cat = case_when(`Minutes Watched` &gt; 
+    145 ~ &quot;high&quot;, `Minutes Watched` &lt;= 145 &amp; 41 &lt;= 
+    `Minutes Watched` ~ &quot;med&quot;, `Minutes Watched` &lt; 
+    41 ~ &quot;low&quot;))
+head(mincat)</code></pre>
+<pre><code>## # A tibble: 6 x 10
+##   month   day  year `Move (cals)` `Exercise (mins… `Stand (hrs)`
+##   &lt;int&gt; &lt;int&gt; &lt;int&gt;         &lt;dbl&gt;            &lt;dbl&gt;         &lt;dbl&gt;
+## 1     1     1  2020             0                0             0
+## 2     1     2  2020             0                0             0
+## 3     1     3  2020           285                7            13
+## 4     1     4  2020            98                3             4
+## 5     1     5  2020           132                6             6
+## 6     1     6  2020           279               10            11
+## # … with 4 more variables: `Minutes Watched` &lt;dbl&gt;, monthcat &lt;chr&gt;, `Stand
+## #   (min)` &lt;dbl&gt;, tvcat_cat &lt;chr&gt;</code></pre>
+<p><strong>This helped clean up the data and make it easier to read and use. First, the date, that was originally in MM/DD/YYYY, was separated using the dplyr separate function to show month, date, and year as three separate columns. Next, these were changed into integer variables instead of character variables using mutate if as these were the only columns that were still characters at this point. Next, the month column was mutated to be a categorical variable for later use using the mutate function to form the column called monthcat. Then, the stand hours variable was manipulated to show a stand minutes column by multiplying the stand hours column by 60 using mutate. Lastly, a categorical variable was made using mutate in which the minutes watched was categorized into high, medium, and low minutes watched using the mutate function, shown as the varibale tvcat_cat. </strong></p>
+</div>
+<div id="filter-and-arrange" class="section level2">
+<h2>Filter and Arrange:</h2>
+<pre class="r"><code>mincat %&gt;% filter(month == 3) %&gt;% arrange(desc(`Minutes Watched`))</code></pre>
+<pre><code>## # A tibble: 31 x 10
+##    month   day  year `Move (cals)` `Exercise (mins… `Stand (hrs)`
+##    &lt;int&gt; &lt;int&gt; &lt;int&gt;         &lt;dbl&gt;            &lt;dbl&gt;         &lt;dbl&gt;
+##  1     3    30  2020           201                5             8
+##  2     3    22  2020             0                0             0
+##  3     3    25  2020           259                6            12
+##  4     3    31  2020           473               66            12
+##  5     3    16  2020             0                0             0
+##  6     3    29  2020             0                0             0
+##  7     3    21  2020             0                0             0
+##  8     3     1  2020           258               11            11
+##  9     3     2  2020           378               40            10
+## 10     3     3  2020           435               42            15
+## 11     3     4  2020           419               58            13
+## 12     3     5  2020           341               30            11
+## 13     3     6  2020           303               21            12
+## 14     3     7  2020           292               11             9
+## 15     3     8  2020           271               17            11
+## 16     3     9  2020           440               47            13
+## 17     3    10  2020           413               48            14
+## 18     3    11  2020           420               37            13
+## 19     3    12  2020           304               23             9
+## 20     3    13  2020           182                6             7
+## 21     3    14  2020             0                0             0
+## 22     3    15  2020             0                0             0
+## 23     3    17  2020             0                0             0
+## 24     3    18  2020           215               30             3
+## 25     3    19  2020           218                3            10
+## 26     3    20  2020           335                9            12
+## 27     3    23  2020           415               40            14
+## 28     3    24  2020           403               53             9
+## 29     3    26  2020           335               45             6
+## 30     3    27  2020           180                4             9
+## 31     3    28  2020             0                0             0
+## # … with 4 more variables: `Minutes Watched` &lt;dbl&gt;, monthcat &lt;chr&gt;, `Stand
+## #   (min)` &lt;dbl&gt;, tvcat_cat &lt;chr&gt;</code></pre>
+<p><strong>This table was used to show the month of March in the year 2020 using the filter function. Then, the minutes watched was arranged in descending order, using the arrange function, to show most to least minutes watched for everyday in March. This table is cool because it shows the month of March 2020, which was when quarantine started. This is interesting because on March 15th the COVID-19 situation got a lot more serious and the quarantine began meaning there wasn’t much to do. This table shows that the most minutes watched were towards the end of the month when the quarantine began and everything was closed, which makes sense because this is when my documentary wacthing hobby really began.</strong></p>
+</div>
+<div id="group-by-select-and-summary-statistics" class="section level2">
+<h2>Group By, Select, and Summary Statistics:</h2>
+<pre class="r"><code>ndist &lt;- mincat %&gt;% select(is.numeric) %&gt;% summarize_all(n_distinct)
+meanvars &lt;- mincat %&gt;% select(is.numeric) %&gt;% summarize_all(mean)
+sdvars &lt;- mincat %&gt;% select(is.numeric) %&gt;% summarize_all(sd)
+varvars &lt;- mincat %&gt;% select(is.numeric) %&gt;% summarize_all(var)
+catstat &lt;- mincat %&gt;% group_by(monthcat) %&gt;% summarize_all(mean) %&gt;% 
+    arrange(desc(`Stand (min)`))
+catstat</code></pre>
+<pre><code>## # A tibble: 12 x 10
+##    monthcat month   day  year `Move (cals)` `Exercise (mins… `Stand (hrs)`
+##    &lt;chr&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;         &lt;dbl&gt;            &lt;dbl&gt;         &lt;dbl&gt;
+##  1 Aug          8  16    2020          322.            17.6           9.48
+##  2 Jun          6  15.5  2020          288.            24.9           9.33
+##  3 Sep          9  15.5  2020          352.            24.5           8.93
+##  4 Dec         12  16    2020          258.            11.9           8.58
+##  5 Feb          2  15    2020          268.            27.9           8.38
+##  6 Jan          1  16    2020          217.            12.9           8.35
+##  7 May          5  16    2020          207.             8.52          8.29
+##  8 Nov         11  15.5  2020          260.            14.0           8.17
+##  9 Mar          3  16    2020          242.            21.0           7.84
+## 10 Oct         10  16    2020          264.            14.8           7.13
+## 11 Apr          4  15.5  2020          195.            10.8           6.53
+## 12 Jul          7  16    2020          120.             5.29          4.90
+## # … with 3 more variables: `Minutes Watched` &lt;dbl&gt;, `Stand (min)` &lt;dbl&gt;,
+## #   tvcat_cat &lt;dbl&gt;</code></pre>
+<pre class="r"><code>mincat %&gt;% group_by(monthcat) %&gt;% summarize_all(max)</code></pre>
+<pre><code>## # A tibble: 12 x 10
+##    monthcat month   day  year `Move (cals)` `Exercise (mins… `Stand (hrs)`
+##    &lt;chr&gt;    &lt;int&gt; &lt;int&gt; &lt;int&gt;         &lt;dbl&gt;            &lt;dbl&gt;         &lt;dbl&gt;
+##  1 Apr          4    30  2020           515               58            13
+##  2 Aug          8    31  2020           706               77            15
+##  3 Dec         12    31  2020           631               75            17
+##  4 Feb          2    29  2020           514               73            15
+##  5 Jan          1    31  2020           509               55            15
+##  6 Jul          7    31  2020           371               18            13
+##  7 Jun          6    30  2020           590               97            15
+##  8 Mar          3    31  2020           473               66            15
+##  9 May          5    31  2020           508               63            16
+## 10 Nov         11    30  2020           520               76            14
+## 11 Oct         10    31  2020           564               44            13
+## 12 Sep          9    30  2020           631               67            15
+## # … with 3 more variables: `Minutes Watched` &lt;dbl&gt;, `Stand (min)` &lt;dbl&gt;,
+## #   tvcat_cat &lt;chr&gt;</code></pre>
+<pre class="r"><code>mincat %&gt;% group_by(monthcat) %&gt;% summarize_all(min)</code></pre>
+<pre><code>## # A tibble: 12 x 10
+##    monthcat month   day  year `Move (cals)` `Exercise (mins… `Stand (hrs)`
+##    &lt;chr&gt;    &lt;int&gt; &lt;int&gt; &lt;int&gt;         &lt;dbl&gt;            &lt;dbl&gt;         &lt;dbl&gt;
+##  1 Apr          4     1  2020             0                0             0
+##  2 Aug          8     1  2020             0                0             0
+##  3 Dec         12     1  2020             0                0             0
+##  4 Feb          2     1  2020             0                0             0
+##  5 Jan          1     1  2020             0                0             0
+##  6 Jul          7     1  2020             0                0             0
+##  7 Jun          6     1  2020             0                0             0
+##  8 Mar          3     1  2020             0                0             0
+##  9 May          5     1  2020             0                0             0
+## 10 Nov         11     1  2020             0                0             0
+## 11 Oct         10     1  2020             0                0             0
+## 12 Sep          9     1  2020             0                0             0
+## # … with 3 more variables: `Minutes Watched` &lt;dbl&gt;, `Stand (min)` &lt;dbl&gt;,
+## #   tvcat_cat &lt;chr&gt;</code></pre>
+<p><strong>To create a table of summary statistics, first vectors of each variables n_distinct, mean, standard deviation, and variation were made using the select and summarize_all functions for use later. Then, a more interesting table was made by grouping by month categorical and summarizing all by mean, then arranging by the mean stand minutes for each month. This is interesting because the month of August 2020 had the most mean stand hours for the year of 2020. In the month of August I moved back to Austin to begin school and walked to many appointments and study spots around campus to keep busy. This is reflected in the table. The last two tables show the maximum and minimum values for each variable by month. These tables are interesting because they allow someone to see what activity was more popular and less popular each month and make hypotheses about these numbers.</strong></p>
+<p>##Tidying:</p>
+<pre class="r"><code>summarytabs &lt;- data.frame(ndist, meanvars, sdvars, 
+    varvars)
+head(summarytabs)</code></pre>
+<pre><code>##   month day year Move..cals. Exercise..mins. Stand..hrs. Minutes.Watched
+## 1    12  31    1         226              67          18              40
+##   Stand..min.  month.1    day.1 year.1 Move..cals..1 Exercise..mins..1
+## 1          18 6.513661 15.75683   2020      249.0683          16.09836
+##   Stand..hrs..1 Minutes.Watched.1 Stand..min..1  month.2    day.2 year.2
+## 1      7.989071          39.48361      479.3443 3.455958 8.823592      0
+##   Move..cals..2 Exercise..mins..2 Stand..hrs..2 Minutes.Watched.2 Stand..min..2
+## 1      157.9539          18.86073      4.510553          80.74841      270.6332
+##    month.3    day.3 year.3 Move..cals..3 Exercise..mins..3 Stand..hrs..3
+## 1 11.94365 77.85578      0      24949.43          355.7273      20.34509
+##   Minutes.Watched.3 Stand..min..3
+## 1          6520.305      73242.31</code></pre>
+<pre class="r"><code>sumtabs &lt;- summarytabs %&gt;% rename(month.ndist = month, 
+    day.ndist = day, Move.ndist = Move..cals., Exercisemin.ndist = Exercise..mins., 
+    Standhrs.ndist = Stand..hrs., minwatch.ndist = Minutes.Watched, 
+    standmin.ndist = Stand..min., month.mean = month.1, 
+    day.mean = day.1, Move.mean = Move..cals..1, Exercisemin.mean = Exercise..mins..1, 
+    Standhrs.mean = Stand..hrs..1, minwatch.mean = Minutes.Watched.1, 
+    standmin.mean = Stand..min..1, month.sd = month.2, 
+    day.sd = day.2, Move.sd = Move..cals..2, Exercisemin.sd = Exercise..mins..2, 
+    Standhrs.sd = Stand..hrs..2, minwatch.sd = Minutes.Watched.2, 
+    standmin.sd = Stand..min..2, month.vars = month.3, 
+    day.vars = day.3, Move.vars = Move..cals..3, Exercisemin.vars = Exercise..mins..3, 
+    Standhrs.vars = Stand..hrs..3, minwatch.vars = Minutes.Watched.3, 
+    standmin.vars = Stand..min..3, year.ndist = year, 
+    year.mean = year.1, year.sd = year.2, year.vars = year.3)
+dubwide &lt;- sumtabs %&gt;% pivot_longer(1:32)
+dubwide</code></pre>
+<pre><code>## # A tibble: 32 x 2
+##    name                 value
+##    &lt;chr&gt;                &lt;dbl&gt;
+##  1 month.ndist          12   
+##  2 day.ndist            31   
+##  3 year.ndist            1   
+##  4 Move.ndist          226   
+##  5 Exercisemin.ndist    67   
+##  6 Standhrs.ndist       18   
+##  7 minwatch.ndist       40   
+##  8 standmin.ndist       18   
+##  9 month.mean            6.51
+## 10 day.mean             15.8 
+## 11 year.mean          2020   
+## 12 Move.mean           249.  
+## 13 Exercisemin.mean     16.1 
+## 14 Standhrs.mean         7.99
+## 15 minwatch.mean        39.5 
+## 16 standmin.mean       479.  
+## 17 month.sd              3.46
+## 18 day.sd                8.82
+## 19 year.sd               0   
+## 20 Move.sd             158.  
+## 21 Exercisemin.sd       18.9 
+## 22 Standhrs.sd           4.51
+## 23 minwatch.sd          80.7 
+## 24 standmin.sd         271.  
+## 25 month.vars           11.9 
+## 26 day.vars             77.9 
+## 27 year.vars             0   
+## 28 Move.vars         24949.  
+## 29 Exercisemin.vars    356.  
+## 30 Standhrs.vars        20.3 
+## 31 minwatch.vars      6520.  
+## 32 standmin.vars     73242.</code></pre>
+<pre class="r"><code>StatTable &lt;- dubwide %&gt;% separate(name, into = c(&quot;Variable&quot;, 
+    &quot;Statistic&quot;)) %&gt;% pivot_wider(names_from = &quot;Statistic&quot;, 
+    values_from = &quot;value&quot;)
+
+StatTable</code></pre>
+<pre><code>## # A tibble: 8 x 5
+##   Variable    ndist    mean     sd    vars
+##   &lt;chr&gt;       &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;
+## 1 month          12    6.51   3.46    11.9
+## 2 day            31   15.8    8.82    77.9
+## 3 year            1 2020      0        0  
+## 4 Move          226  249.   158.   24949. 
+## 5 Exercisemin    67   16.1   18.9    356. 
+## 6 Standhrs       18    7.99   4.51    20.3
+## 7 minwatch       40   39.5   80.7   6520. 
+## 8 standmin       18  479.   271.   73242.</code></pre>
+<p><strong>This code first makes a data set of the four vectors created in the previous section of code. Then, variables were renamed for more clarity when pivoting. Next, a pivot longer function was used and shown above as dubwide. However, this data is double wide as it contains two variables in the name column data. So, the name column was separated using the separate function to create a new columns called variable and statistic. This was then pivoted wider to make the statistics column variables become the column names with the variable column staying as the row names. This allowed an easy to read table fo the summary statistics for each numeric variable in the data set. The most interesting result was that the stand minutes had the highest standard deviation. This is interesting because I stand up more than I do work out. Some days I didn’t work out at all. So, I would expect move goals and exercise goals to have more standard deviation over the stand minutes as stand minutes was a more common thing that I thought I did consistently each day. </strong></p>
+</div>
+<div id="correlation-heat-map" class="section level2">
+<h2>Correlation Heat Map:</h2>
+<pre class="r"><code>mincat %&gt;% select_if(is.numeric) %&gt;% cor %&gt;% as.data.frame %&gt;% 
+    rownames_to_column %&gt;% pivot_longer(-1) %&gt;% ggplot(aes(rowname, 
+    name, fill = value)) + geom_tile() + ggtitle(&quot;Correlation Heat Map&quot;) + 
+    scale_fill_gradient2(low = &quot;red&quot;, mid = &quot;white&quot;, 
+        high = &quot;blue&quot;) + geom_text(aes(label = round(value, 
+    2)), color = &quot;black&quot;, size = 4) + xlab(&quot;&quot;) + ylab(&quot;&quot;) + 
+    coord_fixed() + theme(axis.text.x = element_text(angle = 90, 
+    hjust = 1))</code></pre>
+<p><img src="../../project/project1_files/figure-html/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" />
+<strong>This correlation heat map shows the correlation between each variable. The heat map above shows a large correlation between stand time (both minutes and hours) and move calories. It also shows a strong positive correlation between move calories and exercise minutes. This is because if I am moving then I am also most likely exercising in some way as well as standing. Lastly, The heat map shows a complete positive correlation between stand minutes and stand hours because the stand minutes are a direct function of stand hours created earlier by the mutate function. There are low correlations for the rest of the variables. </strong></p>
+</div>
+<div id="visualization-1" class="section level2">
+<h2>Visualization 1:</h2>
+<pre class="r"><code>ggplot(mincat, aes(`Minutes Watched`, `Exercise (mins)`, 
+    color = monthcat)) + geom_point() + ggtitle(&quot;Exercise vs. TV Minutes Each Month&quot;) + 
+    theme_minimal()</code></pre>
+<p><img src="../../project/project1_files/figure-html/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><strong>The first correlation plot shown is between the variables exercise minutes and minutes watched, colored by month category. This plot shows little to no correlation between the two variables, which is surprising considering if I am not working out, I am spending my free time watching Netflix, so I would expect to see a strong negative correlation between these two variables. </strong></p>
+<p>##Visualization 2:</p>
+<pre class="r"><code>ggplot(mincat, aes(x = monthcat, y = `Move (cals)`)) + 
+    geom_bar(stat = &quot;summary&quot;, fun = mean, aes(fill = monthcat)) + 
+    geom_errorbar(stat = &quot;summary&quot;, fun.data = mean_cl_normal) + 
+    scale_y_continuous(breaks = seq(0, 450, 25)) + 
+    xlab(&quot;Month&quot;) + scale_fill_brewer(palette = &quot;Paired&quot;) + 
+    ggtitle(&quot;Move Calories Summary Each Month&quot;)</code></pre>
+<p><img src="../../project/project1_files/figure-html/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" />
+<strong>The next plot uses stat summary. The bars are colored by month and show the mean and standard deviation of each months move calories. This is not surprising because the tallest bar is the bar for the month of September which is when I first began working out heavily during the school year as a way to relieve stress. The shortest bar is in July which is also not surprising because during this time I was doing 15 hours of summer school and didn’t spend much time working out at all, which is clearly represented in the plot. Each bar shows a pretty consistent standard deviation as I am consistent in wokring out about once a week so varaition would come from that consistency.</strong></p>
+</div>
+<div id="figure-out-how-many-clusters" class="section level2">
+<h2>Figure Out How Many Clusters:</h2>
+<pre class="r"><code>library(cluster)
+temp &lt;- mincat %&gt;% select(`Minutes Watched`, `Exercise (mins)`, 
+    `Move (cals)`)
+sil_width &lt;- vector()
+for (i in 2:10) {
+    pam_fit &lt;- pam(temp, k = i)
+    sil_width[i] &lt;- pam_fit$silinfo$avg.width
+}
+ggplot() + geom_line(aes(x = 1:10, y = sil_width)) + 
+    scale_x_continuous(name = &quot;k&quot;, breaks = 1:10)</code></pre>
+<p><img src="../../project/project1_files/figure-html/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" />
+<strong>The plot above shows where the optimal number of clusters is for the minutes watched, exercise minutes, and move calories, which is shown as 4 because this is the peak of the plot.</strong></p>
+</div>
+<div id="pam" class="section level2">
+<h2>PAM:</h2>
+<pre class="r"><code>library(cluster)
+clust &lt;- mincat %&gt;% dplyr::select(`Minutes Watched`, 
+    `Exercise (mins)`, `Move (cals)`)
+pam5 &lt;- clust %&gt;% scale %&gt;% pam(4)
+pam5</code></pre>
+<pre><code>## Medoids:
+##       ID Minutes Watched Exercise (mins) Move (cals)
+## [1,] 359      -0.4889707      -0.8535384 -1.57684196
+## [2,] 271      -0.4889707      -0.3763565  0.09453199
+## [3,] 189       1.5915657      -0.7474980 -0.64619056
+## [4,]  63      -0.4889707       1.3733103  1.17712648
+## Clustering vector:
+##   [1] 1 1 2 1 2 3 3 2 3 2 2 1 2 2 3 2 4 3 1 1 4 2 4 2 3 2 3 4 3 2 2 1 2 4 4 4 4
+##  [38] 4 1 1 4 4 1 4 3 3 2 4 4 2 1 1 4 1 4 4 4 4 4 4 2 4 4 4 4 2 2 2 4 4 4 2 2 1
+##  [75] 1 1 1 2 2 2 1 3 4 4 3 4 2 1 1 3 4 2 2 3 3 1 4 4 4 2
+##  [ reached getOption(&quot;max.print&quot;) -- omitted 266 entries ]
+## Objective function:
+##     build      swap 
+## 0.7150472 0.7101116 
+## 
+## Available components:
+##  [1] &quot;medoids&quot;    &quot;id.med&quot;     &quot;clustering&quot; &quot;objective&quot;  &quot;isolation&quot; 
+##  [6] &quot;clusinfo&quot;   &quot;silinfo&quot;    &quot;diss&quot;       &quot;call&quot;       &quot;data&quot;</code></pre>
+<pre class="r"><code>pclust &lt;- clust %&gt;% mutate(cluster = as.factor(pam5$clustering))  #save the cluster solution in your dataset
+ggplot(pclust, aes(x = `Minutes Watched`, y = `Exercise (mins)`, 
+    color = cluster)) + geom_point()</code></pre>
+<p><img src="../../project/project1_files/figure-html/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>library(plotly)
+pclust %&gt;% plot_ly(x = ~`Minutes Watched`, y = ~`Exercise (mins)`, 
+    z = ~`Move (cals)`, color = ~cluster, type = &quot;scatter3d&quot;, 
+    mode = &quot;markers&quot;) %&gt;% layout(autosize = F, width = 900, 
+    height = 400)</code></pre>
+<div id="htmlwidget-1" style="width:672px;height:480px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-1">{"x":{"visdat":{"17a6c78e6a686":["function () ","plotlyVisDat"]},"cur_data":"17a6c78e6a686","attrs":{"17a6c78e6a686":{"x":{},"y":{},"z":{},"mode":"markers","color":{},"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter3d"}},"layout":{"width":900,"height":400,"margin":{"b":40,"l":60,"t":25,"r":10},"autosize":false,"scene":{"xaxis":{"title":"`Minutes Watched`"},"yaxis":{"title":"`Exercise (mins)`"},"zaxis":{"title":"`Move (cals)`"}},"hovermode":"closest","showlegend":true},"source":"A","config":{"showSendToCloud":false},"data":[{"x":[0,0,0,0,60,0,84,0,50,0,0,0,0,0,0,72,0,42,0,48,0,0,0,0,0,0,84,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,42,0,42,0,0,0,0,0,42,0,0,0,0,0],"y":[0,0,3,2,1,0,0,1,0,3,7,7,2,0,0,0,0,0,0,0,4,2,0,0,0,0,0,0,0,0,0,2,3,0,4,0,0,4,4,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,1],"z":[0,0,98,110,35,0,0,2,0,100,10,111,7,0,0,0,0,0,0,0,77,94,0,0,0,8,0,0,0,0,0,90,70,0,12,0,0,110,54,0,0,0,0,15,0,0,0,0,0,0,0,107,76,0,0,2,13,0,0,0,6],"mode":"markers","type":"scatter3d","name":"1","marker":{"color":"rgba(102,194,165,1)","line":{"color":"rgba(102,194,165,1)"}},"textfont":{"color":"rgba(102,194,165,1)"},"error_y":{"color":"rgba(102,194,165,1)"},"error_x":{"color":"rgba(102,194,165,1)"},"line":{"color":"rgba(102,194,165,1)"},"frame":null},{"x":[0,0,0,60,0,0,84,0,0,0,60,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,56,0,0,0,0,0,0,0,0,0,42,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,84,0,0,0,0,0,0,0,0,0,0,0,42,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,42,0,0,0,42,0,0,42,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,42,0,42,0,42,84,0,0,0,0,0,0,0,60,0,0,0,0,0,0,0,0,42,0,63,0,0,0,0,0],"y":[7,6,6,5,2,11,7,11,29,27,11,8,12,14,27,26,11,21,11,17,23,6,30,3,9,4,6,30,5,20,19,11,9,4,6,5,7,2,13,3,10,6,8,12,4,4,2,6,6,12,5,5,7,6,6,11,10,4,11,30,10,8,7,10,10,26,14,14,4,6,7,12,13,9,9,11,13,2,11,5,18,13,7,9,11,7,2,7,1,21,14,18,17,24,9,10,12,20,10,15,1,2,24,4,6,4,2,0,6,9,6,0,16,13,32,3,5,9,6,4,16,15,8,12,8,7,7,11,11,6,3,8,3,5,7,2,18,3,18,3,9,5,7,18,3,21,9,0,5,10,0,5,18,14,10,5,8,6,10,17,2,6,7,10,10],"z":[285,132,253,260,278,339,228,179,270,228,265,129,288,223,319,123,258,303,292,271,304,182,215,218,335,180,258,155,179,309,310,283,338,293,288,212,252,151,321,271,265,181,148,270,143,163,152,270,213,294,286,302,234,241,221,255,236,243,281,279,257,350,277,343,382,331,229,252,189,242,215,267,261,293,241,371,242,150,122,207,221,224,208,494,361,350,175,204,176,323,356,344,442,267,190,337,242,398,149,325,300,324,292,253,163,154,325,143,259,188,181,230,239,308,189,272,250,264,305,170,283,327,260,267,207,273,346,329,326,194,222,294,304,298,226,255,304,161,401,253,224,316,274,264,212,353,162,207,291,311,228,276,327,295,271,205,326,240,281,305,233,229,269,269,316],"mode":"markers","type":"scatter3d","name":"2","marker":{"color":"rgba(252,141,98,1)","line":{"color":"rgba(252,141,98,1)"}},"textfont":{"color":"rgba(252,141,98,1)"},"error_y":{"color":"rgba(252,141,98,1)"},"error_x":{"color":"rgba(252,141,98,1)"},"line":{"color":"rgba(252,141,98,1)"},"frame":null},{"x":[288,84,84,300,164,120,163,120,300,252,129,126,288,280,224,156,210,126,126,84,126,126,238,420,390,200,110,114,168,84,126,126,84,126,84,168,168,210,126,336,168,110,294,264,378,546,256,336,180,345,97,120,120,120],"y":[10,2,4,12,16,7,31,2,20,9,0,6,5,0,0,0,9,4,1,8,10,6,4,45,8,7,8,8,2,9,1,0,11,10,0,0,10,0,0,0,0,0,8,4,1,0,5,3,0,1,2,8,0,5],"z":[279,158,164,281,233,165,329,70,320,224,0,259,201,0,0,0,254,139,194,109,299,234,189,387,300,293,249,180,147,182,12,0,95,286,161,0,206,0,0,0,0,130,313,289,262,168,245,116,0,186,37,239,0,223],"mode":"markers","type":"scatter3d","name":"3","marker":{"color":"rgba(141,160,203,1)","line":{"color":"rgba(141,160,203,1)"}},"textfont":{"color":"rgba(141,160,203,1)"},"error_y":{"color":"rgba(141,160,203,1)"},"error_x":{"color":"rgba(141,160,203,1)"},"line":{"color":"rgba(141,160,203,1)"},"frame":null},{"x":[0,0,0,60,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,84,0,0,0,0,42,48,56,56,0,132,60,0,120,0,0,0,0,0,0,0,0,0,0,0,84,84,168,42,0,42,84,0,0,42,0,84,132,126,0,44,84,42,126,0,194,42,126,84,0,0,60,120,0,0],"y":[32,55,45,35,39,36,45,58,37,73,36,30,36,33,29,28,35,51,58,32,38,40,42,58,30,47,48,37,40,53,45,66,35,43,58,29,35,63,97,69,65,85,61,45,50,47,70,77,27,28,41,25,34,67,33,47,59,45,48,30,36,34,34,48,48,30,34,38,37,37,43,35,34,40,34,33,44,28,39,76,67,72,24,75,47,38],"z":[423,425,509,328,397,316,357,514,341,500,282,396,394,335,377,332,276,371,442,429,283,378,435,419,341,440,413,420,415,403,335,473,343,437,515,350,405,508,590,485,526,515,487,405,448,362,706,499,391,458,476,468,427,631,420,487,583,511,627,442,491,266,472,560,518,444,490,448,473,401,564,535,503,496,457,529,519,320,520,494,387,513,390,528,631,511],"mode":"markers","type":"scatter3d","name":"4","marker":{"color":"rgba(231,138,195,1)","line":{"color":"rgba(231,138,195,1)"}},"textfont":{"color":"rgba(231,138,195,1)"},"error_y":{"color":"rgba(231,138,195,1)"},"error_x":{"color":"rgba(231,138,195,1)"},"line":{"color":"rgba(231,138,195,1)"},"frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<pre class="r"><code>library(GGally)
+plot(pam5, which = 2)</code></pre>
+<p><img src="../../project/project1_files/figure-html/unnamed-chunk-10-3.png" width="672" style="display: block; margin: auto;" />
+<strong>Lastly, a PAM clustering was done and visualized on the plot above with minutes watched on the x axis, exercise minutes on the y axis and move calories on the z axis and a normal plot of just the exercise minutes and minutes watched. The scatter plot shows no correlation between exercise minutes and minutes watched and the xyz plot only shows strong positive correlation between exercise minutes and move calories. This is surprising because once again, I normally split my free time between watching Netflix and working out so I would expect to see a negative correlation between exercise minutes or move calories and minutes watched. Also, I expect to see a strong positive correlation between exercise minutes and move calories as when I am exercising I should be burning some amount of calories along with it. This is shown in the xyz plot of the data. A silhouette width analysis was done on this clustering and shows values of 0.74, 0.50, 0.15, and 0.36. This shows that a strong structure was found for cluster one but clusters 2 and 4 show little or artificial structure and cluster 3 shows no structure. </strong></p>
+<pre><code>## R version 3.6.1 (2019-07-05)
+## Platform: x86_64-pc-linux-gnu (64-bit)
+## Running under: Ubuntu 18.04.5 LTS
+## 
+## Matrix products: default
+## BLAS:   /stor/system/opt/R/R-3.6.1/lib/R/lib/libRblas.so
+## LAPACK: /stor/system/opt/R/R-3.6.1/lib/R/lib/libRlapack.so
+## 
+## locale:
+##  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+##  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+##  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+##  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+##  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+## [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+## 
+## attached base packages:
+## [1] stats     graphics  grDevices utils     datasets  methods   base     
+## 
+## other attached packages:
+##  [1] GGally_2.1.0    plotly_4.9.2.2  cluster_2.1.0   forcats_0.5.0  
+##  [5] stringr_1.4.0   dplyr_1.0.2     purrr_0.3.4     readr_1.4.0    
+##  [9] tidyr_1.1.2     tibble_3.0.4    ggplot2_3.3.3   tidyverse_1.3.0
+## 
+## loaded via a namespace (and not attached):
+##  [1] httr_1.4.2          viridisLite_0.3.0   jsonlite_1.7.2     
+##  [4] splines_3.6.1       modelr_0.1.8        Formula_1.2-4      
+##  [7] assertthat_0.2.1    latticeExtra_0.6-29 cellranger_1.1.0   
+## [10] yaml_2.2.1          pillar_1.4.7        backports_1.2.1    
+## [13] lattice_0.20-41     glue_1.4.2          digest_0.6.27      
+## [16] RColorBrewer_1.1-2  checkmate_2.0.0     rvest_0.3.6        
+## [19] colorspace_2.0-0    plyr_1.8.6          htmltools_0.5.0    
+## [22] Matrix_1.3-2        pkgconfig_2.0.3     broom_0.7.3        
+## [25] haven_2.3.1         bookdown_0.21       scales_1.1.1       
+## [28] jpeg_0.1-8.1        htmlTable_2.1.0     generics_0.1.0     
+## [31] farver_2.0.3        ellipsis_0.3.1      withr_2.3.0        
+## [34] lazyeval_0.2.2      nnet_7.3-14         cli_2.2.0          
+## [37] survival_3.2-7      magrittr_2.0.1      crayon_1.3.4       
+## [40] readxl_1.3.1        evaluate_0.14       fs_1.5.0           
+## [43] fansi_0.4.1         xml2_1.3.2          foreign_0.8-71     
+## [46] blogdown_0.20       data.table_1.13.6   tools_3.6.1        
+## [49] hms_0.5.3           formatR_1.7         lifecycle_0.2.0    
+## [52] munsell_0.5.0       reprex_0.3.0        compiler_3.6.1     
+## [55] rlang_0.4.10        grid_3.6.1          rstudioapi_0.13    
+## [58] htmlwidgets_1.5.3   crosstalk_1.1.0.1   base64enc_0.1-3    
+## [61] labeling_0.4.2      rmarkdown_2.6       gtable_0.3.0       
+## [64] reshape_0.8.8       DBI_1.1.0           R6_2.5.0           
+## [67] gridExtra_2.3       lubridate_1.7.9.2   knitr_1.30         
+## [70] utf8_1.1.4          Hmisc_4.4-2         stringi_1.5.3      
+## [73] Rcpp_1.0.5          vctrs_0.3.6         rpart_4.1-15       
+## [76] png_0.1-7           dbplyr_2.0.0        tidyselect_1.1.0   
+## [79] xfun_0.20</code></pre>
+<pre><code>## [1] &quot;2021-05-08 23:48:03 CDT&quot;</code></pre>
+<pre><code>##                                        sysname 
+##                                        &quot;Linux&quot; 
+##                                        release 
+##                           &quot;4.15.0-142-generic&quot; 
+##                                        version 
+## &quot;#146-Ubuntu SMP Tue Apr 13 01:11:19 UTC 2021&quot; 
+##                                       nodename 
+##                   &quot;educcomp01.ccbb.utexas.edu&quot; 
+##                                        machine 
+##                                       &quot;x86_64&quot; 
+##                                          login 
+##                                      &quot;unknown&quot; 
+##                                           user 
+##                                       &quot;mis696&quot; 
+##                                 effective_user 
+##                                       &quot;mis696&quot;</code></pre>
+</div>
+
+            
+        <hr>         <div class="related-posts">
+                <h5>Related Posts</h5>
+                
+              </div> 
+            </div>
+          </div>
+
+   <hr>  <div class="disqus">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+
+    (function() {
+      
+      
+      if (window.location.hostname == "localhost")
+        return;
+
+      var disqus_shortname = '';
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div> 
+        </div>
+      </div>
+    </div>
+
+    
+    <footer>
+  <div id="footer">
+    <div class="container">
+      <p class="text-muted">&copy; All rights reserved. Powered by <a href="https://gohugo.io/">Hugo</a> and
+      <a href="http://www.github.com/nurlansu/hugo-sustain/">sustain</a> with ♥</p>
+    </div>
+  </div>
+</footer>
+<div class="footer"></div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="../../js/docs.min.js"></script>
+<script src="../../js/main.js"></script>
+
+<script src="../../js/ie10-viewport-bug-workaround.js"></script>
+
+
+    
+  </body>
+</html>
