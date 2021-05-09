@@ -1,0 +1,53 @@
+---
+title: Python and RStudio Interaction
+author: Mia Soto
+date: '2021-05-09'
+slug: python-and-rstudio-interaction
+categories: []
+tags: []
+description: ''
+---
+
+>  Python and RStudio can execute very similar functions. These fucntions, while the syntax to execute them is somewaht similar, can be executed separately or interact with one another. This similarity will be explored in this blog post. 
+
+##Calculator
+```{python}
+10-3
+10+3
+10*3
+pow(10,3)
+10/3
+```
+**The chunk of code above demonstrates the similarities and differences between Python and R when using the languages as a calculator. Most of the functions are the exact same, however, if you want to take a number to the power of something, instead of doing 10^3, python requires the code to be pow(10,3). The multiplication, division, addition, and subtraction operations are the exact same.**
+
+
+##Vectors and Indexing
+```{python}
+alphalist=["m", "i", "a"]
+alphalist[0]
+```
+
+**The biggest difference between indexing in Python vs. R is the fact that in an R vector, the first element is element 1 while in Python the first element is element 0. The python function to create a vector also uses brackets rather than the normal c() function for R. This difference, while it makes no difference in the list created, is important to note.**
+
+##Built-in Functions vs. DPLYR
+```{python}
+numlist=[2,5,6,8,9,23,24,28,25,38,49,95]
+numlist.sort()
+numlist
+numlist.reverse()
+numlist
+```
+**The next biggest difference between R and Python is the simplicity of built in functions. In R, the dplyr package had to be used for simplicity when trying to do things such as sort lists. Python has these functions built simply into its interface and therefore makes sorting lists much easier, as seen above using the sort and reverse built in functions. **
+
+##Interacting R and Python:
+```{R}
+library(reticulate)
+list<-c(1,2,3,4,5)
+```
+
+```{python}
+list=[6,7,8,9,10]
+print(r.list,list)
+```
+
+**As you can see from the above code, the similarities between the functions allow for some interactions to occur between Python chunks or code and R chunks of code. The above code shows two vectors made, one in Python and one in R, both called list with 5 different numbers. When combined using the print function, the R list can be called using r.list and will be printed with the Python list. This is super helpful when working between the codes as each language has its strengths and weaknesses and these can be exploited by interacting the two languages together when working on a project.**

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Mia Soto" />
+    
+    <link rel="shortcut icon" type="image/x-icon" href="../../../../../img/favicon.ico">
+    <title>Python and RStudio Interaction</title>
+    <meta name="generator" content="Hugo 0.83.1" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="../../../../../css/main.css" />
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,200bold,400old" />
+    
+    <!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+			<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
+
+    
+  </head>
+
+  <body>
+    <div id="wrap">
+      
+      <nav class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="../../../../../"><i class="fa fa-home"></i></a>
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <div class="navbar-collapse collapse" id="navbar">
+      <ul class="nav navbar-nav navbar-right">
+      
+        
+        <li><a href="../../../../../post/">BLOG</a></li>
+        
+        <li><a href="../../../../../projects/">PROJECTS</a></li>
+        
+        <li><a href="../../../../../academicresume/">ACADEMIC RESUME</a></li>
+        
+        <li><a href="../../../../../professionalresume/">PROFESSIONAL RESUME</a></li>
+        
+      
+      </ul>
+    </div>
+  </div>
+</nav>
+
+      <div class="container">
+        <div class="blog-post">
+          <h3>
+            <strong><a href="../../../../../post/2021/05/09/python-and-rstudio-interaction/">Python and RStudio Interaction</a></strong>
+          </h3>
+        </div>
+ 
+<div class="blog-title">
+          <h4>
+         May 9, 2021 
+            &nbsp;&nbsp;
+            
+          </h4>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="blogpost">
+              
+
+
+<blockquote>
+<p>Python and RStudio can execute very similar functions. These fucntions, while the syntax to execute them is somewaht similar, can be executed separately or interact with one another. This similarity will be explored in this blog post.</p>
+</blockquote>
+<p>##Calculator</p>
+<pre class="python"><code>10-3</code></pre>
+<pre><code>## 7</code></pre>
+<pre class="python"><code>10+3</code></pre>
+<pre><code>## 13</code></pre>
+<pre class="python"><code>10*3</code></pre>
+<pre><code>## 30</code></pre>
+<pre class="python"><code>pow(10,3)</code></pre>
+<pre><code>## 1000</code></pre>
+<pre class="python"><code>10/3</code></pre>
+<pre><code>## 3.3333333333333335</code></pre>
+<p><strong>The chunk of code above demonstrates the similarities and differences between Python and R when using the languages as a calculator. Most of the functions are the exact same, however, if you want to take a number to the power of something, instead of doing 10^3, python requires the code to be pow(10,3). The multiplication, division, addition, and subtraction operations are the exact same.</strong></p>
+<p>##Vectors and Indexing</p>
+<pre class="python"><code>alphalist=[&quot;m&quot;, &quot;i&quot;, &quot;a&quot;]
+alphalist[0]</code></pre>
+<pre><code>## &#39;m&#39;</code></pre>
+<p><strong>The biggest difference between indexing in Python vs. R is the fact that in an R vector, the first element is element 1 while in Python the first element is element 0. The python function to create a vector also uses brackets rather than the normal c() function for R. This difference, while it makes no difference in the list created, is important to note.</strong></p>
+<p>##Built-in Functions vs. DPLYR</p>
+<pre class="python"><code>numlist=[2,5,6,8,9,23,24,28,25,38,49,95]
+numlist.sort()
+numlist</code></pre>
+<pre><code>## [2, 5, 6, 8, 9, 23, 24, 25, 28, 38, 49, 95]</code></pre>
+<pre class="python"><code>numlist.reverse()
+numlist</code></pre>
+<pre><code>## [95, 49, 38, 28, 25, 24, 23, 9, 8, 6, 5, 2]</code></pre>
+<p><strong>The next biggest difference between R and Python is the simplicity of built in functions. In R, the dplyr package had to be used for simplicity when trying to do things such as sort lists. Python has these functions built simply into its interface and therefore makes sorting lists much easier, as seen above using the sort and reverse built in functions. </strong></p>
+<p>##Interacting R and Python:</p>
+<pre class="r"><code>library(reticulate)
+list&lt;-c(1,2,3,4,5)</code></pre>
+<pre class="python"><code>list=[6,7,8,9,10]
+print(r.list,list)</code></pre>
+<pre><code>## [1.0, 2.0, 3.0, 4.0, 5.0] [6, 7, 8, 9, 10]</code></pre>
+<p><strong>As you can see from the above code, the similarities between the functions allow for some interactions to occur between Python chunks or code and R chunks of code. The above code shows two vectors made, one in Python and one in R, both called list with 5 different numbers. When combined using the print function, the R list can be called using r.list and will be printed with the Python list. This is super helpful when working between the codes as each language has its strengths and weaknesses and these can be exploited by interacting the two languages together when working on a project.</strong></p>
+
+            
+        <hr>         <div class="related-posts">
+                <h5>Related Posts</h5>
+                
+              </div> 
+            </div>
+          </div>
+
+   <hr>  <div class="disqus">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+
+    (function() {
+      
+      
+      if (window.location.hostname == "localhost")
+        return;
+
+      var disqus_shortname = '';
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div> 
+        </div>
+      </div>
+    </div>
+
+    
+    <footer>
+  <div id="footer">
+    <div class="container">
+      <p class="text-muted">&copy; All rights reserved. Powered by <a href="https://gohugo.io/">Hugo</a> and
+      <a href="http://www.github.com/nurlansu/hugo-sustain/">sustain</a> with ♥</p>
+    </div>
+  </div>
+</footer>
+<div class="footer"></div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="../../../../../js/docs.min.js"></script>
+<script src="../../../../../js/main.js"></script>
+
+<script src="../../../../../js/ie10-viewport-bug-workaround.js"></script>
+
+
+    
+  </body>
+</html>
