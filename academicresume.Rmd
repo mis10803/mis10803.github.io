@@ -1,0 +1,12 @@
+---
+title: "Academic Resume"
+output: html_document
+hidedate: true
+hiderelated: true
+hidediscus: true
+---
+
+<center>
+<iframe src="/academicresume.pdf" width="100%" height="800" border="0"></iframe>
+</center>
+

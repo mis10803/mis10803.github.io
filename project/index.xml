@@ -5,23 +5,24 @@
     <link>/project/</link>
     <description>Recent content in Projects on Mia Soto</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-US</language><atom:link href="/project/index.xml" rel="self" type="application/rss+xml" />
+    <language>en-US</language>
+    <lastBuildDate>Fri, 07 May 2021 00:00:00 +0000</lastBuildDate><atom:link href="/project/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Project 1</title>
-      <link>/project/project1/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <link>/project/project2/</link>
+      <pubDate>Fri, 07 May 2021 00:00:00 +0000</pubDate>
       
-      <guid>/project/project1/</guid>
-      <description>Mia Soto eid:mis696  Introduction I chose to use personal data for this project as I would love to see how this class can apply to an analysis of my daily life. The two data sets I used were Netflix viewing data and Apple Watch workout statistics. The Netflix viewing data for the year of 2020 was requested from Netflix for my account. Then, I took the data and altered it to make it more fitting for the project.</description>
+      <guid>/project/project2/</guid>
+      <description>Mia Soto eid:mis696  Introduction This data set contains data from car crashes. There are 15 variables in this data set with 26,217 observations, and I will discuss the most notable variables. The first notable variable is a categorical variable called dead that classifies the victim of the crash as alive or dead. Two other important variables are airbag and seatbelt, which are two categorical variables with the option none or airbag/belted, respectively.</description>
     </item>
     
     <item>
       <title>Project 1</title>
-      <link>/project/project2/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <link>/project/project1/</link>
+      <pubDate>Tue, 06 Apr 2021 00:00:00 +0000</pubDate>
       
-      <guid>/project/project2/</guid>
-      <description>Mia Soto eid:mis696  Introduction This data set contains data from car crashes. There are 15 variables in this data set with 26,217 observations, and I will discuss the most notable variables. The first notable variable is a categorical variable called dead that classifies the victim of the crash as alive or dead. Two other important variables are airbag and seatbelt, which are two categorical variables with the option none or airbag/belted, respectively.</description>
+      <guid>/project/project1/</guid>
+      <description>Mia Soto eid:mis696  Introduction I chose to use personal data for this project as I would love to see how this class can apply to an analysis of my daily life. The two data sets I used were Netflix viewing data and Apple Watch workout statistics. The Netflix viewing data for the year of 2020 was requested from Netflix for my account. Then, I took the data and altered it to make it more fitting for the project.</description>
     </item>
     
   </channel>
