@@ -9,6 +9,7 @@ description: ''
 ---
 
 >  Python and RStudio can execute very similar functions. These fucntions, while the syntax to execute them is somewaht similar, can be executed separately or interact with one another. This similarity will be explored in this blog post. 
+![](/post/2021-05-09-python-and-rstudio-interaction_files/pythonvsR.png)
 
 ##Calculator
 ```{python}

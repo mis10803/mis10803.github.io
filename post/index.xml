@@ -13,9 +13,17 @@
       <pubDate>Sun, 09 May 2021 00:00:00 +0000</pubDate>
       
       <guid>/post/2021/05/09/python-and-rstudio-interaction/</guid>
-      <description>Python and RStudio can execute very similar functions. These fucntions, while the syntax to execute them is somewaht similar, can be executed separately or interact with one another. This similarity will be explored in this blog post.
- ##Calculator
+      <description>Python and RStudio can execute very similar functions. These fucntions, while the syntax to execute them is somewaht similar, can be executed separately or interact with one another. This similarity will be explored in this blog post.  ##Calculator
 10-3 ## 7 10+3 ## 13 10*3 ## 30 pow(10,3) ## 1000 10/3 ## 3.3333333333333335 The chunk of code above demonstrates the similarities and differences between Python and R when using the languages as a calculator.</description>
+    </item>
+    
+    <item>
+      <title>Super Secret Shrimp Pasta Recipe</title>
+      <link>/post/2021/05/09/super-secret-shrimp-pasta-recipe/</link>
+      <pubDate>Sun, 09 May 2021 00:00:00 +0000</pubDate>
+      
+      <guid>/post/2021/05/09/super-secret-shrimp-pasta-recipe/</guid>
+      <description>Since the COIVD-19 pandemic, I have worked tirelessly to find hobbies that excite me. I have always been into cooking; however, when quarantine hit, I really made an effort to expand my knowledge about food beyond simple recipes. This passion carried on into this school year, especially because I had my own kitchen to experiment in. In this blog I will share with you what I believe to be the best and easiest shrimp pasta recipe.</description>
     </item>
     
   </channel>
